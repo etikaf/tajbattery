@@ -420,7 +420,9 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 
 /* Text on the dark blue bands: yellow labels, near-white body text */
 .hero .eyebrow, .spec .eyebrow, .cta .eyebrow { color: var(--sun); }
-.hero p.lead, .cta p { color: var(--on-panel-muted); }
+.hero p.lead, .cta p { color: #ffffff; font-weight: 700; }
+.hero p.lead { font-size: 1.2rem; line-height: 1.6; }
+.spec dt, .spec small, .crumbs, .crumbs a { color: #ffffff; }
 
 /* "Coming soon" tag */
 .soon {
