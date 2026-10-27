@@ -488,3 +488,4 @@ html:lang(ur) .menu summary { padding-block: 2px 8px; line-height: 1.8; }
 
 /* A swipe row that is itself the .wrap keeps its own gutter instead of bleeding past the screen */
 @media (max-width: 620px) { .wrap.swipe { margin-inline: 0; } }
+html:lang(ur) .steps li::before { content: "مرحلہ " counter(step); font-family: var(--font-urdu); font-size: 0.95rem; }

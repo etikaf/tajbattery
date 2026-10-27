@@ -8,7 +8,7 @@ This repo holds the website for **Taj Battery Service, UPS & Solar System**, a b
 
 ## Layout
 
-- `docs/`: the published static site (English pages at the root; Urdu versions of Home, Packages and Contact in `docs/ur/`, right-to-left, listed in `UR_PAGES`), served by GitHub Pages from `main` → `/docs`. It has no build step at serve time and no JS framework.
+- `docs/`: the published static site (English pages at the root; Urdu versions of Home, Packages, Services and Contact in `docs/ur/`, right-to-left, listed in `UR_PAGES`), served by GitHub Pages from `main` → `/docs`. It has no build step at serve time and no JS framework.
 - `tools/build_site.py` (run it after any CSS/JS edit too: it stamps `?v=<hash>` on style.css/site.js so phones drop cached copies): generates every page (photos are registered in its `IMG` dict and placed with `fig()`) in `docs/`, along with `robots.txt` and `sitemap.xml`. The header, footer, contact details, `SITE` URL, packages, accessories and FAQ all live here.
 - `docs/assets/style.css`: all styles, hand-written CSS using tokens in `:root` plus a dark-mode override. Brand chosen by the owner: signboard blue `#1e5bb8` + sun yellow `#f5b400`, Nunito for headings and body, Noto Nastaliq Urdu; logo is the crowned battery (`docs/assets/logo.svg`). `docs/assets/site.js` turns the contact form into a pre-filled WhatsApp message and pre-selects a package from `?need=`.
 - `photos/`: the owner's original photos. Copy them into `docs/assets/img/` with descriptive filenames before using them.

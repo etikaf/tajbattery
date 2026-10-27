@@ -70,7 +70,7 @@ NAV = [
     ("contact.html", "Contact", "رابطہ"),
 ]
 
-UR_PAGES = {"index.html", "solar-packages.html", "contact.html"}  # pages that have an Urdu version in ur/
+UR_PAGES = {"index.html", "solar-packages.html", "services.html", "contact.html"}  # pages that have an Urdu version in ur/
 
 def bdi(x):
     """Keep numbers and units (5 kW, 0315 2020525) left-to-right inside Urdu text."""
@@ -1049,13 +1049,13 @@ home_ur = f'''<section class="hero">
         <div class="icon">{ICON_PANEL}</div>
         <h3>سولر تنصیب</h3>
         <p>سائٹ وزٹ، لوڈ کا حساب، اونچا یا عام اسٹرکچر، صاف ستھری وائرنگ، اور ٹیسٹ کے بعد حوالگی، فون پر مانیٹرنگ کے ساتھ۔</p>
-        <a class="more" href="../services.html#installation">تنصیب کا طریقہ (English)</a>
+        <a class="more" href="services.html#installation">تنصیب کا طریقہ</a>
       </article>
       <article class="card card--soon">
         <div class="icon">{ICON_METER}</div>
         <h3>K-Electric net metering {SOON_UR}</h3>
         <p>دن کے اضافی یونٹ K-Electric کو دیں اور بل کم کریں۔ ہمارے سسٹم net metering کے لیے تیار ہیں، درخواست کی سروس جلد شروع ہوگی۔</p>
-        <a class="more" href="../services.html#net-metering">مزید تفصیل (English)</a>
+        <a class="more" href="services.html#net-metering">مزید تفصیل</a>
       </article>
       <article class="card">
         <div class="icon">{ICON_PLUG}</div>
@@ -1193,6 +1193,130 @@ page("contact.html",
      "Taj Battery & Solar سے رابطہ، پہلوان گوٹھ کراچی | 0315 2020525",
      "سولر کی قیمت، بیٹریوں اور سامان کے لیے کال یا واٹس ایپ کریں 0315 2020525۔ Taj Battery Service, UPS & Solar System، پہلوان گوٹھ، کراچی۔",
      con_ur, [crumbs_ld("contact.html", "رابطہ", "ur")], lang="ur")
+
+
+# ---- Urdu services page ----
+STEPS_UR = [
+    ("سائٹ وزٹ اور لوڈ کا جائزہ", "ہم آپ کے گھر یا دکان آتے ہیں، چھت، سایہ اور سمت دیکھتے ہیں، اور وہ چیزیں لکھتے ہیں جو آپ چلانا چاہتے ہیں۔"),
+    ("سسٹم کا ڈیزائن اور قیمت", "آپ کو لکھی ہوئی قیمت ملتی ہے جس میں پینل کی تعداد، inverter، بیٹری اور اسٹرکچر شامل ہوتا ہے، اسی دن کے ریٹ پر۔"),
+    ("تنصیب", "ہماری ٹیم اسٹرکچر، پینل، inverter، بیٹری، وائرنگ، بریکر، surge protection اور ارتھنگ لگاتی ہے۔"),
+    ("ٹیسٹنگ اور حوالگی", "ہم سسٹم ٹیسٹ کرتے ہیں، آپ کے فون پر مانیٹرنگ سیٹ کرتے ہیں اور استعمال کا طریقہ سمجھاتے ہیں۔"),
+    ("Net metering کے لیے تیار", "آپ کا سسٹم اس طرح لگایا جاتا ہے کہ بعد میں net metering ہو سکے۔ ہماری net metering درخواست کی سروس جلد شروع ہوگی۔"),
+    ("بعد از فروخت سروس", "خرابی، صفائی، سسٹم بڑا کرنے یا بعد میں بیٹری لگوانے کے لیے کال یا واٹس ایپ کریں۔"),
+]
+steps_ur_html = "".join("<li><h3>%s</h3><p>%s</p></li>" % s for s in STEPS_UR)
+svc_ur = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("خدمات", "ur")}
+      <h1>سولر تنصیب، UPS کی مرمت اور بیٹری سروس</h1>
+      <p class="lead">پہلے سائٹ وزٹ سے لے کر برسوں کی بعد از فروخت سروس تک، ایک ہی ٹیم آپ کا سسٹم سنبھالتی ہے۔</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="installation">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">تنصیب</span>
+      <h2>سولر تنصیب کیسے ہوتی ہے</h2>
+      <p>گھر کا عام {B("5 kW")} سسٹم آرڈر کنفرم ہونے کے بعد ایک سے دو دن میں لگ جاتا ہے۔</p>
+    </div>
+    <ol class="steps">{steps_ur_html}</ol>
+  </div>
+</section>
+
+<section class="section section--alt" id="net-metering">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">K-Electric</span>
+      <h2>کراچی میں net metering {SOON_UR}</h2>
+      <p>Net metering میں دن کے وقت آپ کے پینلز کی اضافی بجلی K-Electric کو جاتی ہے اور آپ کے بل میں ایڈجسٹ ہوتی ہے۔ ہم net metering کی درخواستوں کی تیاری کر رہے ہیں۔ یہ اس طرح ہوگا:</p>
+    </div>
+    <div class="grid grid-2">
+      <article class="card">
+        <h3>آپ کو کیا چاہیے</h3>
+        <ul>
+          <li>میٹر کے مالک کے CNIC کی کاپی</li>
+          <li>تازہ K-Electric بل</li>
+          <li>پراپرٹی کی ملکیت یا کرایہ داری کا ثبوت</li>
+          <li>لگا ہوا on-grid یا hybrid سسٹم</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>ہم کیا کریں گے</h3>
+        <ul>
+          <li>درخواست اور سسٹم کی ڈرائنگ تیار کریں گے</li>
+          <li>فائل جمع کروا کر K-Electric سے پیروی کریں گے</li>
+          <li>انسپیکشن کا انتظام کریں گے</li>
+          <li>گرین میٹر لگنے تک آپ کے ساتھ رہیں گے</li>
+        </ul>
+      </article>
+    </div>
+    <p class="note" style="margin-top:16px">Net metering کے قوانین اور اضافی بجلی کے ریٹ NEPRA طے کرتا ہے اور یہ بدل سکتے ہیں۔ فیصلہ کرنے سے پہلے موجودہ قوانین ہم سے پوچھ لیں۔</p>
+  </div>
+</section>
+
+<section class="section" id="maintenance">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">مینٹیننس</span>
+      <h2>اپنے سسٹم کی پیداوار برقرار رکھیں</h2>
+      <p>کراچی کی گرد چند ہفتوں میں پینل کی پیداوار کافی کم کر سکتی ہے۔ باقاعدہ صفائی اور چیکنگ سے پورے یونٹ ملتے رہتے ہیں۔</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><div class="icon">{ICON_PANEL}</div><h3>پینل کی دھلائی</h3><p>پینل، کلیمپ اور کنیکٹر کی دھلائی اور جانچ۔</p></article>
+      <article class="card"><div class="icon">{ICON_WRENCH}</div><h3>خرابی کی مرمت</h3><p>Inverter کے error code، بار بار ٹرپ ہوتے بریکر، کم پیداوار اور وائرنگ کی خرابیاں۔</p></article>
+      <article class="card"><div class="icon">{ICON_PLUG}</div><h3>سسٹم بڑھانا اور منتقلی</h3><p>مزید پینل یا بیٹریاں لگوائیں، inverter بدلیں، یا سسٹم نئے گھر منتقل کروائیں۔</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="ups-repair">
+  <div class="wrap media-row">
+    {fig("ups_repair", cap_text="ہماری بینچ پر UPS کی مرمت", pre="../")}
+    <div class="stack">
+      <span class="eyebrow">UPS اور inverter کی مرمت</span>
+      <h2>اپنی بینچ پر UPS کی مرمت</h2>
+      <p>UPS چارج نہیں ہو رہا، بیپ کر رہا ہے یا لوڈ پر بند ہو جاتا ہے؟ دکان پر لے آئیں۔ ہم سرکٹ بورڈ ٹھیک کرتے ہیں، خراب پرزے بدلتے ہیں اور واپس دینے سے پہلے ہر یونٹ لوڈ پر ٹیسٹ کرتے ہیں۔</p>
+      <ul>
+        <li>گھر کے UPS اور inverter کی مرمت</li>
+        <li>چارجنگ کی خرابیاں اور بیٹری کا صحیح جوڑ</li>
+        <li>سولر charge controller اور hybrid inverter کی جانچ</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="batteries">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">بیٹریاں</span>
+      <h2>بیٹری سروس</h2>
+      <p>اپنی بیٹری پہلوان گوٹھ کی دکان پر لائیں، یا ہمیں کال کریں۔</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>ٹیسٹنگ اور چارجنگ</h3><p>UPS، tubular اور گاڑی کی بیٹریوں کا چیک اپ اور چارجنگ۔</p></article>
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>بیٹری کی تبدیلی</h3><p>Lithium، tubular، اور گاڑی کی ڈرائی یا عام بیٹریاں، دکان پر فٹنگ کے ساتھ۔ پرانی بیٹری کے بدلے کی سہولت بھی موجود ہے۔</p></article>
+      <article class="card"><div class="icon">{ICON_PHONE}</div><h3>گاڑی کا جمپ اسٹارٹ</h3><p>قریب میں گاڑی اسٹارٹ نہیں ہو رہی؟ {B(PHONE_LOCAL)} پر کال کریں، ہم آپ کے پاس آئیں گے۔</p></article>
+    </div>
+    <div class="strip strip--2" style="margin-top:20px">{fig("charging", cap_text="گاہکوں کی بیٹریاں چارجنگ پر", pre="../")}{fig("inside", cap_text="Osaka، Exide، Phoenix اور AGS کی بیٹریاں", pre="../")}</div>
+  </div>
+</section>
+{CTA_UR}'''
+SVC_UR_LD = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "inLanguage": "ur",
+    "itemListElement": [
+        {"@type": "ListItem", "position": i + 1, "item": {"@type": "Service", "name": n, "provider": {"@id": SITE + "/#business"}, "areaServed": "Karachi"}}
+        for i, n in enumerate(["سولر سسٹم کی تنصیب", "سولر پینل کی صفائی اور مینٹیننس", "UPS اور inverter کی مرمت", "بیٹری ٹیسٹنگ، چارجنگ اور تبدیلی", "گاڑی کا جمپ اسٹارٹ"])
+    ],
+}
+page("services.html",
+     "کراچی میں سولر تنصیب، UPS مرمت اور بیٹری سروس | Taj Battery & Solar",
+     "پہلوان گوٹھ، کراچی سے سولر تنصیب، پینل کی صفائی، UPS اور inverter کی مرمت، گاڑی کی بیٹریاں اور بیٹری چارجنگ۔ کال یا واٹس ایپ 0315 2020525",
+     svc_ur, [crumbs_ld("services.html", "خدمات", "ur"), SVC_UR_LD], lang="ur")
 
 
 # ================= robots / sitemap =================
