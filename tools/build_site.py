@@ -474,7 +474,7 @@ home = f'''{SWAP_BANNER}
       <span class="eyebrow">Car batteries</span>
       <h2>Car batteries, fitted at the shop</h2>
       <p class="ur" lang="ur">گاڑی کی بیٹری — اوساکا، ایکسائیڈ، فینکس</p>
-      <p>Dry (maintenance-free) and regular batteries for most cars, from Osaka, Exide, Phoenix, AGS and Daewoo. Bring your car to Pehlwan Goth and we check your old battery, fit the new one and test the charging before you leave.</p>
+      <p>Dry (maintenance-free) and regular batteries for most cars, from Osaka, Exide, Phoenix, AGS and Daewoo. Bring your car to our shop, or call us and we come to you. We check your old battery, fit the new one and test the charging.</p>
       <ul class="brands"><li>Osaka</li><li>Exide</li><li>Phoenix</li><li>AGS</li><li>Daewoo</li></ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car is: ")}" target="_blank" rel="noopener">{ICON_WA}Send your car model for a price</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
       <p><a class="more" href="batteries.html">Car and solar batteries: dry vs regular, lithium vs tubular</a></p>
@@ -702,7 +702,7 @@ CB_FAQ = [
     ("Which battery fits my car?",
      "Send us your car model and year. We match the right size (Ah) and terminal layout and tell you which Osaka, Exide, Phoenix, AGS or Daewoo batteries fit."),
     ("Do you fit the battery?",
-     "Yes. Bring your car to our shop in Pehlwan Goth and we fit the new battery and check that the car's charging is working before you leave."),
+     "Yes. Bring your car to our shop in Pehlwan Goth, or call us and we come to you. We fit the new battery and check that the car's charging is working."),
     ("Do you take the old battery?",
      "Yes. Bring your old battery, take a new one and pay only the price difference. WhatsApp us your old battery's brand and size for the exact amount."),
     ("Lithium or tubular battery for solar?",
@@ -1171,7 +1171,7 @@ home_ur = f'''<a class="swap" href="{wa("السلام علیکم، میں اپن
     <div class="stack">
       <span class="eyebrow">گاڑی کی بیٹریاں</span>
       <h2>گاڑی کی بیٹری، دکان پر فٹنگ کے ساتھ</h2>
-      <p>زیادہ تر گاڑیوں کے لیے ڈرائی (maintenance-free) اور عام بیٹریاں، Osaka، Exide، Phoenix، AGS اور Daewoo کی۔ اپنی گاڑی پہلوان گوٹھ لائیں۔ ہم پرانی بیٹری چیک کریں گے، نئی بیٹری لگائیں گے اور جانے سے پہلے چارجنگ ٹیسٹ کریں گے۔</p>
+      <p>زیادہ تر گاڑیوں کے لیے ڈرائی (maintenance-free) اور عام بیٹریاں، Osaka، Exide، Phoenix، AGS اور Daewoo کی۔ گاڑی ہماری دکان پر لائیں، یا کال کریں اور ہم آپ کے پاس آئیں گے۔ ہم پرانی بیٹری چیک کریں گے، نئی بیٹری لگائیں گے اور چارجنگ ٹیسٹ کریں گے۔</p>
       <ul class="brands" dir="ltr"><li>Osaka</li><li>Exide</li><li>Phoenix</li><li>AGS</li><li>Daewoo</li></ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("السلام علیکم، مجھے گاڑی کی بیٹری چاہیے۔ میری گاڑی کا ماڈل: ")}" target="_blank" rel="noopener">{ICON_WA}گاڑی کا ماڈل بھیج کر قیمت پوچھیں</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
     </div>
