@@ -378,10 +378,11 @@ def pkg_card(p, full):
   </dl>'''
     return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
   <span class="tag">{p['tag']}</span>
-  <div><h3 class="size">{p['size']}<small> kW</small></h3><p class="kind">{p['kind']}</p></div>
+  <div><h3 class="size"><a href="package-{p['key'].lower()}.html">{p['size']}<small> kW</small></a></h3><p class="kind">{p['kind']}</p></div>
   <p class="units num"><b>{p['units']}</b> units a day</p>
   {details}
   <ul>{runs}</ul>
+  <a class="more" href="package-{p['key'].lower()}.html">See what it runs</a>
   <a class="btn {'btn--sun' if p.get('top') else 'btn--blue'}" href="contact.html?need={p['key']}">Get price</a>
 </article>'''
 
@@ -432,7 +433,7 @@ home = f'''{SWAP_BANNER}
     </div>
     <aside class="spec" aria-labelledby="spec-title">
       <span class="eyebrow">Our most popular system</span>
-      <h2 id="spec-title">5 kW hybrid for a family home</h2>
+      <h2 id="spec-title"><a href="package-5kw.html">5 kW hybrid for a family home</a></h2>
       <dl>
         <dt>Solar panels</dt><dd>10 × 585 W N-type</dd>
         <dt>Array size</dt><dd>5.85 kWp</dd>
@@ -1065,10 +1066,11 @@ def pkg_card_ur(p, full):
   </dl>'''
     return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
   <span class="tag">{u['tag']}</span>
-  <div><h3 class="size">{B(p['size'] + '<small> kW</small>')}</h3><p class="kind" dir="ltr">{p['kind']}</p></div>
+  <div><h3 class="size"><a href="package-{p['key'].lower()}.html">{B(p['size'] + '<small> kW</small>')}</a></h3><p class="kind" dir="ltr">{p['kind']}</p></div>
   <p class="units"><b>{B(p['units'])}</b> یونٹ روزانہ</p>
   {details}
   <ul>{runs}</ul>
+  <a class="more" href="package-{p['key'].lower()}.html">دیکھیں کیا چلے گا</a>
   <a class="btn {'btn--sun' if p.get('top') else 'btn--blue'}" href="contact.html?need={p['key']}">قیمت معلوم کریں</a>
 </article>'''
 
@@ -1130,7 +1132,7 @@ home_ur = f'''<a class="swap" href="{wa("السلام علیکم، میں اپن
     </div>
     <aside class="spec" aria-labelledby="spec-title">
       <span class="eyebrow">ہمارا سب سے مقبول سسٹم</span>
-      <h2 id="spec-title">گھر کے لیے {B("5 kW")} hybrid</h2>
+      <h2 id="spec-title"><a href="package-5kw.html">گھر کے لیے {B("5 kW")} hybrid</a></h2>
       <dl>
         <dt>سولر پینل</dt><dd>{B("10 × 585 W")} N-type</dd>
         <dt>کل سائز</dt><dd>{B("5.85 kWp")}</dd>
@@ -1449,12 +1451,145 @@ page("services.html",
      svc_ur, [crumbs_ld("services.html", "خدمات", "ur"), SVC_UR_LD], lang="ur")
 
 
+# ================= PACKAGE DETAIL PAGES (line-art "what it runs") =================
+def _art(paths):
+    return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">%s</svg>' % paths
+ART = {
+    "fan": _art('<path d="M24 4v8"/><circle cx="24" cy="15.5" r="3.5"/><path d="M20.6 16.4 6.3 19.6a1.6 1.6 0 0 0 .4 3.1l14.6-2.8"/><path d="M27.4 16.4l14.3 3.2a1.6 1.6 0 0 1-.4 3.1l-14.6-2.8"/><path d="M21.5 19v5a2.5 2.5 0 0 0 5 0v-5"/><path d="M12 32c4 3 20 3 24 0" opacity=".5"/>'),
+    "light": _art('<path d="M18 31c-3.2-2.5-5.5-6.2-5.5-10a11.5 11.5 0 0 1 23 0c0 3.8-2.3 7.5-5.5 10v4H18z"/><path d="M19 39h10M21 43h6"/><path d="M24 2v3M7 9l2.2 2.2M41 9l-2.2 2.2M3 21h3M42 21h3"/>'),
+    "tv": _art('<rect x="4" y="8" width="40" height="26" rx="2.5"/><path d="M17 41h14M24 34v7"/><path d="M9 13h9" opacity=".5"/>'),
+    "fridge": _art('<rect x="12" y="3" width="24" height="42" rx="3"/><path d="M12 18h24M17 8v6M17 23v8"/>'),
+    "ac": _art('<rect x="3" y="10" width="42" height="16" rx="4"/><path d="M8 21h32"/><path d="M14 31c0 2-2 2.5-2 4.5s2 2.5 2 4.5M24 31c0 2-2 2.5-2 4.5s2 2.5 2 4.5M34 31c0 2-2 2.5-2 4.5s2 2.5 2 4.5"/>'),
+    "motor": _art('<rect x="5" y="17" width="22" height="17" rx="3"/><path d="M10 22v7M15 22v7M20 22v7"/><path d="M27 21h8v-9h7M27 30h12"/><path d="M9 34v5h14v-5"/>'),
+    "washer": _art('<rect x="8" y="4" width="32" height="40" rx="3"/><path d="M8 12h32M13 8h5"/><circle cx="34" cy="8" r="1"/><circle cx="24" cy="28" r="9"/><path d="M19 29c2-2 4 2 6 0s3-1 4 0"/>'),
+    "computer": _art('<rect x="9" y="9" width="30" height="21" rx="2"/><path d="M4 37h40l-3-7H7z"/><path d="M21 34h6"/>'),
+}
+LOAD_LABEL = {"fan": ("Ceiling fans", "پنکھے"), "light": ("LED lights", "LED لائٹس"), "tv": ("LED TV", "LED TV"),
+              "fridge": ("Fridge", "فریج"), "ac": ("Inverter AC, 1.5 ton", "inverter AC، ڈیڑھ ٹن"), "motor": ("Water motor", "پانی کی موٹر"),
+              "washer": ("Washing machine", "واشنگ مشین"), "computer": ("Computers", "کمپیوٹر")}
+LOADS = {
+    "3kW": [("fan", 6), ("light", 10), ("tv", 1), ("fridge", 1), ("motor", 1)],
+    "5kW": [("ac", 1), ("fan", 8), ("light", 15), ("tv", 2), ("fridge", 1), ("motor", 1), ("washer", 1)],
+    "10kW": [("ac", 3), ("fan", 12), ("light", 25), ("tv", 3), ("fridge", 2), ("motor", 1), ("washer", 1)],
+    "15kW": [("ac", 5), ("fan", 20), ("light", 40), ("computer", 10), ("fridge", 2), ("motor", 2)],
+}
+LOAD_NOTE = {
+    "3kW": ("Typical load in daytime sun. At night the battery keeps fans, lights and TV running.", "دن کی دھوپ میں عام لوڈ۔ رات کو بیٹری پنکھے، لائٹیں اور TV چلاتی ہے۔"),
+    "5kW": ("Typical load in daytime sun; the AC runs on sunshine. At night the battery keeps fans, lights and TV running.", "دن کی دھوپ میں عام لوڈ؛ AC دھوپ پر چلتا ہے۔ رات کو بیٹری پنکھے، لائٹیں اور TV چلاتی ہے۔"),
+    "10kW": ("Typical load in daytime sun. Add a battery to keep running in load shedding.", "دن کی دھوپ میں عام لوڈ۔ لوڈ شیڈنگ میں چلانے کے لیے بیٹری لگوائیں۔"),
+    "15kW": ("Typical daytime load for a shop, clinic, school or office.", "دکان، کلینک، اسکول یا دفتر کا دن کا عام لوڈ۔"),
+}
+LOAD_DESC = {"fan": "ceiling fans", "light": "LED lights", "tv": "LED TV", "fridge": "fridge", "ac": "inverter AC",
+             "motor": "water motor", "washer": "washing machine", "computer": "computers"}
+def pkg_slug(key):
+    return "package-%s.html" % key.lower()
+for _p in PACKAGES:
+    UR_PAGES.add(pkg_slug(_p["key"]))
+
+def package_page(p, lang):
+    key, ur = p["key"], (lang == "ur")
+    u = PKG_UR[key]
+    size = p["size"] + " kW"
+    cols = len(LOADS[key]) if len(LOADS[key]) <= 6 else -(-len(LOADS[key]) // 2)
+    tiles = "".join(
+        f'<li class="load"><span class="load-art">{ART[k]}</span><b class="load-n">{bdi("× %d" % n) if ur else "× %d" % n}</b><span>{LOAD_LABEL[k][1 if ur else 0]}</span></li>'
+        for k, n in LOADS[key])
+    others = "".join(
+        f'<a href="{pkg_slug(q["key"])}"{" aria-current=\"page\"" if q is p else ""}>{bdi(q["size"] + " kW") if ur else q["size"] + " kW"}</a>' for q in PACKAGES)
+    if ur:
+        title = f"کراچی میں {size} سولر سسٹم: کیا چلے گا | Taj Battery"
+        desc = f"{size} {p['kind']} سولر پیکج، کراچی: " + "، ".join("%d %s" % (n, LOAD_LABEL[k][1]) for k, n in LOADS[key]) + "۔ تنصیب Taj Battery، پہلوان گوٹھ۔ 0315 2020525"
+        body = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("سولر پیکجز", "ur").replace('<li aria-current="page">سولر پیکجز</li>', '<li><a href="solar-packages.html">سولر پیکجز</a></li><li aria-current="page">' + bdi(size) + '</li>')}
+      <span class="eyebrow">{u["tag"]}</span>
+      <h1>{bdi(size)} سولر سسٹم <bdi dir="ltr" class="nowrap">{p["kind"]}</bdi></h1>
+      <ul class="spec-chips">
+        <li>روزانہ تقریباً {bdi(p["units"].replace("≈ ", ""))} یونٹ</li>
+        <li>پینل: {bdi(p["panels"])}</li>
+        <li>Inverter: {u["inverter"]}</li>
+        <li>بیٹری: {u["battery"]}</li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn btn--sun" href="contact.html?need={key}">قیمت معلوم کریں</a>
+        <a class="btn btn--wa" href="{wa("السلام علیکم، مجھے " + size + " سولر پیکج کی قیمت معلوم کرنی ہے۔")}" target="_blank" rel="noopener">{ICON_WA}واٹس ایپ پر پوچھیں</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">کیا چلے گا</span>
+      <h2>یہ سسٹم کیا چلا سکتا ہے</h2>
+    </div>
+    <ul class="loads" style="--cols:{cols}">{tiles}</ul>
+    <p class="note" style="margin-top:16px">{LOAD_NOTE[key][1]} ہم آپ کی اصل چیزوں کے حساب سے سسٹم بناتے ہیں۔</p>
+  </div>
+</section>
+<section class="section section--alt">
+  <div class="wrap stack">
+    <p>شامل ہے: پینل، inverter، اسٹرکچر، DC اور AC وائرنگ، بریکر، surge protection، ارتھنگ اور تنصیب۔</p>
+    <nav class="jump pkg-switch" aria-label="دوسرے پیکجز">{others}</nav>
+  </div>
+</section>
+{CTA_UR}'''
+        crumb = crumbs_ld(pkg_slug(key), size + " سولر سسٹم", "ur")
+    else:
+        title = f"{size} Solar System in Karachi: What It Runs | Taj Battery"
+        desc = f"{size} {p['kind'].lower()} solar package in Karachi runs " + ", ".join("%d %s" % (n, LOAD_DESC[k]) for k, n in LOADS[key]) + ". Installed by Taj Battery, Pehlwan Goth. 0315 2020525."
+        body = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Solar Packages").replace('<li aria-current="page">Solar Packages</li>', '<li><a href="solar-packages.html">Solar Packages</a></li><li aria-current="page">' + size + '</li>')}
+      <span class="eyebrow">{p["tag"]}</span>
+      <h1>{size} {p["kind"]} solar system</h1>
+      <ul class="spec-chips">
+        <li>{p["units"]} units a day</li>
+        <li>Panels: {p["panels"]}</li>
+        <li>Inverter: {p["inverter"]}</li>
+        <li>Battery: {p["battery"]}</li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn btn--sun" href="contact.html?need={key}">Get price</a>
+        <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I want the price of the " + size + " solar package.")}" target="_blank" rel="noopener">{ICON_WA}Ask on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What it runs</span>
+      <h2>What a {size} system can run</h2>
+    </div>
+    <ul class="loads" style="--cols:{cols}">{tiles}</ul>
+    <p class="note" style="margin-top:16px">{LOAD_NOTE[key][0]} We size every system to your actual appliances.</p>
+  </div>
+</section>
+<section class="section section--alt">
+  <div class="wrap stack">
+    <p>Included: panels, inverter, mounting structure, DC and AC wiring, breakers, surge protection, earthing and installation.</p>
+    <nav class="jump pkg-switch" aria-label="Other packages">{others}</nav>
+  </div>
+</section>
+{CTA}'''
+        crumb = crumbs_ld(pkg_slug(key), size + " solar system")
+    page(pkg_slug(key), title, desc, body, [crumb], lang=lang)
+
+for _p in PACKAGES:
+    package_page(_p, "en")
+    package_page(_p, "ur")
+
 # ================= robots / sitemap =================
 open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE)
 import datetime
 TODAY = datetime.date.today().isoformat()
 urls = "".join("  <url><loc>%s/%s</loc><lastmod>%s</lastmod></url>\n" % (SITE, "" if h == "index.html" else h, TODAY) for h, *_ in NAV)
-urls += "".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n" % (url_for(h, "ur"), TODAY) for h, *_ in NAV if h in UR_PAGES)
+PKG_SLUGS = [pkg_slug(p["key"]) for p in PACKAGES]
+urls += "".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n" % (url_for(h, "en"), TODAY) for h in PKG_SLUGS)
+urls += "".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n" % (url_for(h, "ur"), TODAY) for h in [n[0] for n in NAV] + PKG_SLUGS if h in UR_PAGES)
 open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
 
