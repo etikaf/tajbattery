@@ -499,3 +499,9 @@ html:lang(ur) .steps li::before { content: "مرحلہ " counter(step); font-fam
 .checklist li::before { content: "!"; position: absolute; inset-inline-start: 14px; top: 12px; width: 20px; height: 20px; border-radius: 50%; background: var(--sun); color: var(--sun-ink); font-weight: 800; font-size: 0.8rem; display: grid; place-items: center; }
 @media (max-width: 960px) { .site-footer .wrap { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 760px) { .site-footer .wrap { grid-template-columns: 1fr; } }
+.shop .visit { background: var(--surface-2); border-radius: var(--radius); padding: 12px 16px; color: var(--ink); }
+@media (max-width: 400px) {
+  .site-header .wrap { gap: 8px; }
+  .header-cta { gap: 6px; }
+  .lang, .menu summary { padding-inline: 10px; }
+}

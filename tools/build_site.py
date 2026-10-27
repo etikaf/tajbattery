@@ -49,6 +49,10 @@ PHONE_LOCAL = "0315 2020525"
 WA = "923152020525"  # WhatsApp, same as the shop line
 WA_LOCAL = "0315 2020525"
 MAPS = "https://share.google/svg2b4ibmyMFKSHeM"
+FACEBOOK = "https://www.facebook.com/tajbatery"
+ADDRESS = "Main Pehlwan Goth Road, near Saqa-e-Sakina Imambargah, Pehlwan Goth, Karachi"
+ADDRESS_UR = "مین پہلوان گوٹھ روڈ، نزد سقائے سکینہ امام بارگاہ، پہلوان گوٹھ، کراچی"
+HOURS = "Open every day, 9 am to 9 pm"
 
 def wa(text):
     return "https://wa.me/" + WA + "?text=" + urllib.parse.quote(text)
@@ -150,7 +154,9 @@ def footer(lang="en"):
         <li><a href="tel:{PHONE_E164}">کال {bdi(PHONE_LOCAL)}</a></li>
         <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">واٹس ایپ {bdi(WA_LOCAL)}</a></li>
         <li><a href="{MAPS}" target="_blank" rel="noopener">گوگل میپ پر دیکھیں</a></li>
-        <li>پہلوان گوٹھ، کراچی، سندھ</li>
+        <li><a href="{FACEBOOK}" target="_blank" rel="noopener">فیس بک پیج</a></li>
+        <li>{ADDRESS_UR}</li>
+        <li>ہر روز صبح {bdi("9")} بجے سے رات {bdi("9")} بجے تک</li>
       </ul>
     </div>
     <p class="legal">&copy; <span id="year">2026</span> تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم، پہلوان گوٹھ، کراچی۔ قیمتیں اور اسٹاک اکثر بدلتے رہتے ہیں، براہِ کرم واٹس ایپ پر تصدیق کر لیں۔</p>
@@ -187,7 +193,9 @@ def footer(lang="en"):
         <li><a href="tel:{PHONE_E164}">Call {PHONE_LOCAL}</a></li>
         <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp {WA_LOCAL}</a></li>
         <li><a href="{MAPS}" target="_blank" rel="noopener">Find us on Google Maps</a></li>
-        <li>Pehlwan Goth, Karachi, Sindh</li>
+        <li><a href="{FACEBOOK}" target="_blank" rel="noopener">Facebook page</a></li>
+        <li>{ADDRESS}</li>
+        <li>{HOURS}</li>
         <li><a href="ur/index.html" lang="ur">اردو میں دیکھیں</a></li>
       </ul>
     </div>
@@ -214,7 +222,13 @@ BUSINESS = {
     "foundingDate": "2012",
     "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "telephone": "+" + WA, "contactOption": "WhatsApp", "areaServed": "PK", "availableLanguage": ["en", "ur"]},
     "hasMap": MAPS,
-    "sameAs": [MAPS],
+    "sameAs": [MAPS, FACEBOOK],
+    "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "09:00",
+        "closes": "21:00",
+    }],
     "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Products and services",
@@ -228,7 +242,7 @@ BUSINESS = {
     },
     "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Pehlwan Goth",
+        "streetAddress": "Main Pehlwan Goth Road, near Saqa-e-Sakina Imambargah, Pehlwan Goth",
         "addressLocality": "Karachi",
         "addressRegion": "Sindh",
         "addressCountry": "PK",
@@ -469,6 +483,7 @@ home = f'''<section class="hero">
     <div class="stack">
       <span class="eyebrow">Visit the shop</span>
       <h2>Pehlwan Goth's battery and solar shop since 2012</h2>
+      <p class="visit"><b>{ADDRESS}</b><br>{HOURS}</p>
       <p>Since 2012, families and shops around Pehlwan Goth have come to us for batteries, UPS and solar systems. Come and see panels, inverters and batteries in person before you buy.</p>
       <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
       <p>We sell Osaka, Exide, Phoenix, AGS and Daewoo batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
@@ -1047,7 +1062,9 @@ con = f'''<section class="hero hero-sm">
     <dl class="nap">
       <div><dt>Phone</dt><dd><a href="tel:{PHONE_E164}">{PHONE_LOCAL}</a></dd></div>
       <div><dt>WhatsApp</dt><dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener">+92 315 2020525</a></dd></div>
-      <div><dt>Shop</dt><dd>Pehlwan Goth, Karachi, Sindh</dd></div>
+      <div><dt>Shop</dt><dd>Main Pehlwan Goth Road, near Saqa-e-Sakina Imambargah, Pehlwan Goth, Karachi</dd></div>
+      <div><dt>Opening hours</dt><dd>Every day, 9 am to 9 pm</dd></div>
+      <div><dt>Facebook</dt><dd><a href="{FACEBOOK}" target="_blank" rel="noopener">facebook.com/tajbatery</a></dd></div>
       <div><dt>Map</dt><dd><a href="{MAPS}" target="_blank" rel="noopener">Open in Google Maps</a></dd></div>
       <div><dt>Service area</dt><dd style="font-weight:400">Pehlwan Goth, Gulistan-e-Jauhar and all of Karachi</dd></div>
     </dl></div>
@@ -1224,6 +1241,7 @@ home_ur = f'''<section class="hero">
     <div class="stack">
       <span class="eyebrow">دکان پر تشریف لائیں</span>
       <h2>2012 سے پہلوان گوٹھ کی بیٹری اور سولر کی دکان</h2>
+      <p class="visit"><b>{ADDRESS_UR}</b><br>ہر روز صبح {B("9")} بجے سے رات {B("9")} بجے تک</p>
       <p>2012 سے پہلوان گوٹھ کے گھرانے اور دکاندار بیٹریوں، UPS اور سولر سسٹم کے لیے ہمارے پاس آتے ہیں۔ خریدنے سے پہلے پینل، inverter اور بیٹریاں خود آ کر دیکھیں۔</p>
       <p>ہم Osaka، Exide، Phoenix، AGS اور Daewoo کی بیٹریاں بیچتے ہیں، UPS کی مرمت کرتے ہیں، اور دکان پر بیٹری چیک، چارج اور تبدیل کرتے ہیں۔</p>
       <div class="btn-row"><a class="btn btn--sun btn--sm" href="../our-shop.html">دکان کی تصاویر دیکھیں</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">راستہ دیکھیں</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
@@ -1371,7 +1389,9 @@ con_ur = f'''<section class="hero hero-sm">
     <dl class="nap">
       <div><dt>فون</dt><dd><a href="tel:{PHONE_E164}">{B(PHONE_LOCAL)}</a></dd></div>
       <div><dt>واٹس ایپ</dt><dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener">{B("+92 315 2020525")}</a></dd></div>
-      <div><dt>دکان</dt><dd>پہلوان گوٹھ، کراچی، سندھ</dd></div>
+      <div><dt>دکان</dt><dd>{ADDRESS_UR}</dd></div>
+      <div><dt>اوقات</dt><dd>ہر روز صبح {B("9")} بجے سے رات {B("9")} بجے تک</dd></div>
+      <div><dt>فیس بک</dt><dd><a href="{FACEBOOK}" target="_blank" rel="noopener">{B("facebook.com/tajbatery")}</a></dd></div>
       <div><dt>نقشہ</dt><dd><a href="{MAPS}" target="_blank" rel="noopener">گوگل میپ پر کھولیں</a></dd></div>
       <div><dt>سروس کا علاقہ</dt><dd style="font-weight:400">پہلوان گوٹھ، گلستانِ جوہر اور پورا کراچی</dd></div>
     </dl></div>
