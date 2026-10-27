@@ -182,8 +182,8 @@ BUSINESS = {
     "name": NAME,
     "alternateName": ["Taj Battery & Solar System", "Taj Battery Service", "Taj Battery", "تاج بیٹری سروس"],
     "image": [SITE + "/assets/img/" + IMG[k][0] for k in ("front", "inside", "charging", "ups_repair")],
-    "brand": [{"@type": "Brand", "name": b} for b in ["Osaka", "Exide", "Phoenix"]],
-    "description": "Solar panel installation, hybrid and on-grid solar packages, car batteries (Osaka, Exide, Phoenix), UPS repair, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
+    "brand": [{"@type": "Brand", "name": b} for b in ["Osaka", "Exide", "Phoenix", "AGS", "Daewoo"]],
+    "description": "Solar panel installation, hybrid and on-grid solar packages, dry and regular car batteries (Osaka, Exide, Phoenix, AGS, Daewoo), UPS repair, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
     "url": SITE + "/",
     "logo": SITE + "/assets/logo.svg",
     "telephone": PHONE_E164,
@@ -348,7 +348,7 @@ FAQ = [
     ("Will solar work during load shedding?",
      "Only hybrid and off-grid systems keep running during load shedding, because they have a battery. A plain on-grid system switches off when K-Electric power goes, for safety. Our 3 kW and 5 kW packages are hybrid for this reason."),
     ("Do you sell car batteries?",
-     "Yes. We sell Osaka, Exide and Phoenix car batteries for most cars and fit them at the shop in Pehlwan Goth. WhatsApp your car model for the right battery and today's price."),
+     "Yes. We sell Osaka, Exide, Phoenix, AGS and Daewoo car batteries for most cars, both dry (maintenance-free) and regular, and fit them at the shop in Pehlwan Goth. WhatsApp your car model for the right battery and today's price."),
     ("Do you do K-Electric net metering?",
      "Net metering is coming soon. Our on-grid and hybrid systems are net metering ready, so you can apply once the service starts. Message us on WhatsApp and we'll let you know."),
     ("Do you only work in Pehlwan Goth?",
@@ -394,7 +394,7 @@ home = f'''<section class="hero">
 
 <div class="facts">
   <a href="solar-packages.html"><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></a>
-  <a href="#car-batteries"><b>Car batteries</b><span>Osaka, Exide, Phoenix, fitted at the shop</span></a>
+  <a href="#car-batteries"><b>Car batteries</b><span>Dry and regular. Osaka, Exide, Phoenix, AGS, Daewoo</span></a>
   <a href="accessories.html"><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></a>
   <a href="our-shop.html"><b>Since 2012</b><span>Our shop in Pehlwan Goth, Karachi</span></a>
 </div>
@@ -419,8 +419,8 @@ home = f'''<section class="hero">
       <span class="eyebrow">Car batteries</span>
       <h2>Car batteries, fitted at the shop</h2>
       <p class="ur" lang="ur">گاڑی کی بیٹری — اوساکا، ایکسائیڈ، فینکس</p>
-      <p>Osaka, Exide and Phoenix batteries for most cars. Bring your car to Pehlwan Goth and we check your old battery, fit the new one and test the charging before you leave.</p>
-      <ul class="brands"><li>Osaka</li><li>Exide</li><li>Phoenix</li></ul>
+      <p>Dry (maintenance-free) and regular batteries for most cars, from Osaka, Exide, Phoenix, AGS and Daewoo. Bring your car to Pehlwan Goth and we check your old battery, fit the new one and test the charging before you leave.</p>
+      <ul class="brands"><li>Osaka</li><li>Exide</li><li>Phoenix</li><li>AGS</li><li>Daewoo</li></ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car is: ")}" target="_blank" rel="noopener">{ICON_WA}Send your car model for a price</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
     </div>
   </div>
@@ -434,7 +434,7 @@ home = f'''<section class="hero">
       <h2>Pehlwan Goth's battery and solar shop since 2012</h2>
       <p>Since 2012, families and shops around Pehlwan Goth have come to us for batteries, UPS and solar systems. Come and see panels, inverters and batteries in person before you buy.</p>
       <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
-      <p>We still sell Osaka, Exide and Phoenix batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
+      <p>We sell Osaka, Exide, Phoenix, AGS and Daewoo batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
       <div class="btn-row"><a class="btn btn--sun btn--sm" href="our-shop.html">See inside the shop</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
     </div>
   </div>
@@ -489,7 +489,7 @@ home = f'''<section class="hero">
 
 page("index.html",
      "Solar System Installation in Pehlwan Goth, Karachi | Taj Battery & Solar",
-     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation, plus Osaka, Exide and Phoenix car batteries and UPS repair in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation, plus dry and regular car batteries (Osaka, Exide, Phoenix, AGS, Daewoo) and UPS repair in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
      home, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_LD])
 
 # ================= PACKAGES =================
@@ -596,10 +596,11 @@ CATS = [
         ("Wi-Fi monitoring dongle", "See your solar production on your phone."),
     ]),
     ("batteries", "Batteries", "بیٹریاں", [
-        ("Car batteries", "Osaka, Exide and Phoenix car batteries for most cars, fitted at the shop."),
+        ("Dry car batteries", "Maintenance-free car batteries, no water top-up. Osaka, Exide, Phoenix, AGS and Daewoo, fitted at the shop."),
+        ("Regular car batteries", "Standard (water) car batteries for most cars, from the same brands, fitted at the shop."),
         ("Bike batteries", "Batteries for motorbikes and rickshaws."),
         ("Lithium (LiFePO4) batteries", "2.5, 5 and 10 kWh. Long life, no water top-up."),
-        ("Tubular batteries", "Osaka, Exide and Phoenix deep-cycle batteries for UPS and solar."),
+        ("Tubular batteries", "Osaka, Exide, Phoenix, AGS and Daewoo deep-cycle batteries for UPS and solar."),
         ("Battery cables and lugs", "Copper cables and lugs to connect battery banks safely."),
     ], "exide"),
     ("structures", "Mounting structures", "اسٹرکچر", [
@@ -805,7 +806,7 @@ shop = f'''<section class="hero hero-sm">
       <p>Taj Battery Service opened in Pehlwan Goth in 2012. Since then, families and shopkeepers have come to us for batteries, UPS units, charging and repairs, and for solar systems. We design and install complete solar systems for homes, shops and offices across Karachi.</p>
       <p>When you buy solar from us, you deal with a shop you can walk into. If something needs attention later, you know where to find us.</p>
       <ul>
-        <li>Car and UPS batteries from Osaka, Exide, Phoenix and AGS</li>
+        <li>Dry and regular car batteries and UPS batteries from Osaka, Exide, Phoenix, AGS and Daewoo</li>
         <li>UPS and inverter repair at our own bench</li>
         <li>Solar panels, inverters, cables and accessories</li>
         <li>Complete solar installation (net metering coming soon)</li>
@@ -827,7 +828,7 @@ shop = f'''<section class="hero hero-sm">
 {CTA}'''
 page("our-shop.html",
      "Our Shop in Pehlwan Goth, Karachi | Taj Battery Service, UPS & Solar",
-     "Visit Taj Battery Service, UPS & Solar System in Pehlwan Goth, Karachi. Osaka, Exide and Phoenix batteries, UPS repair, battery charging, solar panels and accessories. Call 0315 2020525.",
+     "Visit Taj Battery Service, UPS & Solar System in Pehlwan Goth, Karachi. Osaka, Exide, Phoenix, AGS and Daewoo batteries, UPS repair, battery charging, solar panels and accessories. Call 0315 2020525.",
      shop, [crumbs_ld("our-shop.html", "Our Shop")])
 
 # ================= CONTACT =================
@@ -929,7 +930,7 @@ FAQ_UR = [
     ("کیا لوڈ شیڈنگ میں سولر چلے گا؟",
      "صرف hybrid اور off-grid سسٹم لوڈ شیڈنگ میں چلتے ہیں، کیونکہ ان میں بیٹری ہوتی ہے۔ عام on-grid سسٹم حفاظت کی وجہ سے بجلی جاتے ہی بند ہو جاتا ہے۔ اسی لیے ہمارے " + B("3 kW") + " اور " + B("5 kW") + " پیکج hybrid ہیں۔"),
     ("کیا آپ گاڑی کی بیٹری بھی بیچتے ہیں؟",
-     "جی ہاں۔ زیادہ تر گاڑیوں کے لیے Osaka، Exide اور Phoenix بیٹریاں، پہلوان گوٹھ کی دکان پر فٹنگ کے ساتھ۔ صحیح بیٹری اور آج کی قیمت کے لیے اپنی گاڑی کا ماڈل واٹس ایپ کریں۔"),
+     "جی ہاں۔ زیادہ تر گاڑیوں کے لیے Osaka، Exide، Phoenix، AGS اور Daewoo کی ڈرائی (maintenance-free) اور عام بیٹریاں، پہلوان گوٹھ کی دکان پر فٹنگ کے ساتھ۔ صحیح بیٹری اور آج کی قیمت کے لیے اپنی گاڑی کا ماڈل واٹس ایپ کریں۔"),
     ("کیا آپ K-Electric net metering کرواتے ہیں؟",
      "Net metering کی سروس جلد شروع ہو رہی ہے۔ ہمارے on-grid اور hybrid سسٹم net metering کے لیے تیار ہوتے ہیں، اس لیے سروس شروع ہوتے ہی آپ درخواست دے سکیں گے۔ واٹس ایپ پر پیغام بھیجیں، ہم آپ کو بتا دیں گے۔"),
     ("کیا آپ صرف پہلوان گوٹھ میں کام کرتے ہیں؟",
@@ -990,7 +991,7 @@ home_ur = f'''<section class="hero">
 
 <div class="facts">
   <a href="solar-packages.html"><b>{B("3 kW")} سے {B("20 kW")}</b><span>hybrid، on-grid اور off-grid سسٹم</span></a>
-  <a href="#car-batteries"><b>گاڑی کی بیٹریاں</b><span>Osaka، Exide، Phoenix، دکان پر فٹنگ</span></a>
+  <a href="#car-batteries"><b>گاڑی کی بیٹریاں</b><span>ڈرائی اور عام۔ Osaka، Exide، Phoenix، AGS، Daewoo</span></a>
   <a href="../accessories.html"><b>مکمل سامان</b><span>اسٹرکچر، تاریں، بریکر، بیٹریاں</span></a>
   <a href="../our-shop.html"><b><bdi dir="ltr">2012</bdi> سے</b><span>ہماری دکان پہلوان گوٹھ، کراچی میں</span></a>
 </div>
@@ -1013,8 +1014,8 @@ home_ur = f'''<section class="hero">
     <div class="stack">
       <span class="eyebrow">گاڑی کی بیٹریاں</span>
       <h2>گاڑی کی بیٹری، دکان پر فٹنگ کے ساتھ</h2>
-      <p>زیادہ تر گاڑیوں کے لیے Osaka، Exide اور Phoenix بیٹریاں۔ اپنی گاڑی پہلوان گوٹھ لائیں۔ ہم پرانی بیٹری چیک کریں گے، نئی بیٹری لگائیں گے اور جانے سے پہلے چارجنگ ٹیسٹ کریں گے۔</p>
-      <ul class="brands" dir="ltr"><li>Osaka</li><li>Exide</li><li>Phoenix</li></ul>
+      <p>زیادہ تر گاڑیوں کے لیے ڈرائی (maintenance-free) اور عام بیٹریاں، Osaka، Exide، Phoenix، AGS اور Daewoo کی۔ اپنی گاڑی پہلوان گوٹھ لائیں۔ ہم پرانی بیٹری چیک کریں گے، نئی بیٹری لگائیں گے اور جانے سے پہلے چارجنگ ٹیسٹ کریں گے۔</p>
+      <ul class="brands" dir="ltr"><li>Osaka</li><li>Exide</li><li>Phoenix</li><li>AGS</li><li>Daewoo</li></ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("السلام علیکم، مجھے گاڑی کی بیٹری چاہیے۔ میری گاڑی کا ماڈل: ")}" target="_blank" rel="noopener">{ICON_WA}گاڑی کا ماڈل بھیج کر قیمت پوچھیں</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
     </div>
   </div>
@@ -1027,7 +1028,7 @@ home_ur = f'''<section class="hero">
       <span class="eyebrow">دکان پر تشریف لائیں</span>
       <h2>2012 سے پہلوان گوٹھ کی بیٹری اور سولر کی دکان</h2>
       <p>2012 سے پہلوان گوٹھ کے گھرانے اور دکاندار بیٹریوں، UPS اور سولر سسٹم کے لیے ہمارے پاس آتے ہیں۔ خریدنے سے پہلے پینل، inverter اور بیٹریاں خود آ کر دیکھیں۔</p>
-      <p>ہم Osaka، Exide اور Phoenix بیٹریاں بیچتے ہیں، UPS کی مرمت کرتے ہیں، اور دکان پر بیٹری چیک، چارج اور تبدیل کرتے ہیں۔</p>
+      <p>ہم Osaka، Exide، Phoenix، AGS اور Daewoo کی بیٹریاں بیچتے ہیں، UPS کی مرمت کرتے ہیں، اور دکان پر بیٹری چیک، چارج اور تبدیل کرتے ہیں۔</p>
       <div class="btn-row"><a class="btn btn--sun btn--sm" href="../our-shop.html">دکان کی تصاویر دیکھیں</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">راستہ دیکھیں</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
     </div>
   </div>
@@ -1079,7 +1080,7 @@ home_ur = f'''<section class="hero">
 
 page("index.html",
      "پہلوان گوٹھ، کراچی میں سولر سسٹم کی تنصیب | Taj Battery & Solar",
-     "پہلوان گوٹھ، کراچی میں 3 kW سے 20 kW تک hybrid اور on-grid سولر پیکجز، تنصیب کے ساتھ۔ Osaka، Exide اور Phoenix گاڑی کی بیٹریاں اور UPS کی مرمت۔ کال یا واٹس ایپ 0315 2020525",
+     "پہلوان گوٹھ، کراچی میں 3 kW سے 20 kW تک hybrid اور on-grid سولر پیکجز، تنصیب کے ساتھ۔ Osaka، Exide، Phoenix، AGS اور Daewoo گاڑی کی بیٹریاں اور UPS کی مرمت۔ کال یا واٹس ایپ 0315 2020525",
      home_ur, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_UR_LD], lang="ur")
 
 # ---- Urdu packages page ----

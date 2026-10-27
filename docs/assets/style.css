@@ -97,8 +97,9 @@ p { margin: 0; }
 .section-head { display: grid; gap: 10px; max-width: 64ch; margin-bottom: 32px; }
 .section-head p { color: var(--muted); }
 .section-head .ur { color: var(--muted); font-size: 1.05rem; }
-.skip { position: absolute; left: -999px; }
-.skip:focus { left: 16px; top: 16px; z-index: 100; background: var(--sun); color: var(--sun-ink); padding: 8px 12px; }
+/* Hidden until focused; clipped in place (not moved off-screen) so right-to-left pages don't get extra width */
+.skip { position: absolute; top: 0; inset-inline-start: 0; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip:focus { width: auto; height: auto; clip-path: none; inset-inline-start: 16px; top: 16px; z-index: 100; background: var(--sun); color: var(--sun-ink); padding: 8px 12px; }
 
 /* Buttons */
 .btn {
@@ -484,3 +485,6 @@ section[id], .cat[id], article[id] { scroll-margin-top: 90px; }
 html:lang(ur) p, html:lang(ur) li, html:lang(ur) dd, html:lang(ur) dt, html:lang(ur) .hero p.lead, html:lang(ur) .cta p { line-height: 2.2; }
 html:lang(ur) .hero-copy { gap: 16px; }
 html:lang(ur) .menu summary { padding-block: 2px 8px; line-height: 1.8; }
+
+/* A swipe row that is itself the .wrap keeps its own gutter instead of bleeding past the screen */
+@media (max-width: 620px) { .wrap.swipe { margin-inline: 0; } }
