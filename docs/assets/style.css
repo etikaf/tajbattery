@@ -136,8 +136,9 @@ p { margin: 0; }
 .nav a[aria-current="page"] span { font-weight: 800; }
 .header-cta { display: flex; gap: 8px; }
 .menu { display: none; }
-@media (max-width: 1100px) {
-  .nav, .header-cta .btn { display: none; }
+@media (max-width: 1100px) { .header-cta .btn { display: none; } }
+@media (max-width: 1240px) {
+  .nav { display: none; }
   .menu { display: block; position: relative; }
   .menu summary {
     list-style: none; cursor: pointer; padding: 6px 14px; border: 1px solid var(--line);
@@ -309,7 +310,7 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 
 /* Footer */
 .site-footer { background: var(--surface); border-top: 1px solid var(--line); padding-block: 40px; font-size: 0.95rem; }
-.site-footer .wrap { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 28px; }
+.site-footer .wrap { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 28px; }
 .site-footer h2 { font-size: 1.2rem; margin-bottom: 10px; }
 .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .site-footer a { color: var(--muted); text-decoration: none; }
@@ -440,8 +441,8 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 
 /* Car battery highlight */
 .carbat .ph img { aspect-ratio: 4 / 3; object-fit: cover; }
-.carbat .brands { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
-.carbat .brands li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; color: var(--ink); }
+.brands { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.brands li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; color: var(--ink); }
 
 /* Language switch (English | اردو) */
 .lang {
@@ -479,7 +480,8 @@ section[id], .cat[id], article[id] { scroll-margin-top: 90px; }
 
 /* Keep the header on one line on laptops */
 .nav a, .btn, .lang { white-space: nowrap; }
-@media (max-width: 1280px) { .header-cta .btn--call { display: none; } }
+@media (max-width: 1440px) { .header-cta .btn--call { display: none; } }
+.brand { flex: none; } .brand div { white-space: nowrap; }
 
 /* Nastaliq needs tall lines everywhere, including the hero paragraph */
 html:lang(ur) p, html:lang(ur) li, html:lang(ur) dd, html:lang(ur) dt, html:lang(ur) .hero p.lead, html:lang(ur) .cta p { line-height: 2.2; }
@@ -489,3 +491,11 @@ html:lang(ur) .menu summary { padding-block: 2px 8px; line-height: 1.8; }
 /* A swipe row that is itself the .wrap keeps its own gutter instead of bleeding past the screen */
 @media (max-width: 620px) { .wrap.swipe { margin-inline: 0; } }
 html:lang(ur) .steps li::before { content: "مرحلہ " counter(step); font-family: var(--font-urdu); font-size: 0.95rem; }
+
+/* Car batteries page */
+.cars li { font-weight: 600; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 70ch; }
+.checklist li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; padding-inline-start: 44px; position: relative; }
+.checklist li::before { content: "!"; position: absolute; inset-inline-start: 14px; top: 12px; width: 20px; height: 20px; border-radius: 50%; background: var(--sun); color: var(--sun-ink); font-weight: 800; font-size: 0.8rem; display: grid; place-items: center; }
+@media (max-width: 960px) { .site-footer .wrap { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .site-footer .wrap { grid-template-columns: 1fr; } }

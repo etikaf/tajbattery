@@ -64,6 +64,7 @@ ICON_WRENCH = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="c
 NAV = [
     ("index.html", "Home", "ہوم"),
     ("solar-packages.html", "Packages", "سولر پیکجز"),
+    ("batteries.html", "Batteries", "بیٹریاں"),
     ("accessories.html", "Accessories", "سامان"),
     ("services.html", "Services", "خدمات"),
     ("our-shop.html", "Our Shop", "ہماری دکان"),
@@ -76,9 +77,11 @@ def bdi(x):
     """Keep numbers and units (5 kW, 0315 2020525) left-to-right inside Urdu text."""
     return '<bdi dir="ltr">%s</bdi>' % x
 
-def nav_links(current, lang):
+def nav_links(current, lang, home=True):
     out = []
     for href, label, ur in NAV:
+        if not home and href == "index.html":
+            continue
         if lang == "ur":
             target = href if href in UR_PAGES else "../" + href
             text = ur
@@ -90,7 +93,8 @@ def nav_links(current, lang):
 
 def header(current, lang="en"):
     pre = "../" if lang == "ur" else ""
-    links = nav_links(current, lang)
+    links = nav_links(current, lang, home=False)
+    menu_links = nav_links(current, lang)
     if lang == "ur":
         switch = '<a class="lang" href="../%s" hreflang="en" lang="en">English</a>' % current
         menu, skip = "مینو", "مواد پر جائیں"
@@ -111,7 +115,7 @@ def header(current, lang="en"):
       <a class="btn btn--ghost btn--sm btn--call" href="tel:{PHONE_E164}">{ICON_PHONE}<bdi dir="ltr">{PHONE_LOCAL}</bdi></a>
       <a class="btn btn--wa btn--sm" href="{wa(wa_text)}" target="_blank" rel="noopener">{ICON_WA}<span>WhatsApp</span></a>
       {switch}
-      <details class="menu"><summary>{menu}</summary><nav class="nav" aria-label="Mobile">{links}</nav></details>
+      <details class="menu"><summary>{menu}</summary><nav class="nav" aria-label="Mobile">{menu_links}</nav></details>
     </div>
   </div>
 </header>'''
@@ -125,6 +129,16 @@ def footer(lang="en"):
     <div class="stack">
       <h2>تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم</h2>
       <p>2012 سے گھروں، دکانوں اور دفاتر کے لیے سولر سسٹم، بیٹریاں اور سولر کا سامان۔ دکان پہلوان گوٹھ، کراچی میں ہے اور ہم پورے کراچی میں کام کرتے ہیں۔</p>
+    </div>
+    <div>
+      <h2>ہم کیا بیچتے ہیں</h2>
+      <ul>
+        <li><a href="solar-packages.html">سولر سسٹم، {bdi("3 kW")} سے {bdi("20 kW")}</a></li>
+        <li><a href="../batteries.html#car">گاڑی کی ڈرائی اور عام بیٹریاں</a></li>
+        <li><a href="../batteries.html#solar">سولر کی lithium اور tubular بیٹریاں</a></li>
+        <li><a href="../accessories.html">سولر DC کا سامان</a></li>
+        <li><a href="services.html#ups-repair">UPS اور inverter کی مرمت</a></li>
+      </ul>
     </div>
     <div>
       <h2>صفحات</h2>
@@ -152,6 +166,16 @@ def footer(lang="en"):
     <div class="stack">
       <h2>Taj Battery Service, UPS &amp; Solar System</h2>
       <p>Solar systems, batteries and solar accessories for homes, shops and offices since 2012. Based in Pehlwan Goth, Karachi, and serving all of Karachi.</p>
+    </div>
+    <div>
+      <h2>What we sell</h2>
+      <ul>
+        <li><a href="solar-packages.html">Solar systems, 3 kW to 20 kW</a></li>
+        <li><a href="batteries.html#car">Car batteries, dry and regular</a></li>
+        <li><a href="batteries.html#solar">Solar batteries, lithium and tubular</a></li>
+        <li><a href="accessories.html">Solar DC accessories</a></li>
+        <li><a href="services.html#ups-repair">UPS and inverter repair</a></li>
+      </ul>
     </div>
     <div>
       <h2>Pages</h2>
@@ -190,6 +214,18 @@ BUSINESS = {
     "foundingDate": "2012",
     "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "telephone": "+" + WA, "contactOption": "WhatsApp", "areaServed": "PK", "availableLanguage": ["en", "ur"]},
     "hasMap": MAPS,
+    "sameAs": [MAPS],
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Products and services",
+        "itemListElement": [{"@type": "OfferCatalog", "name": n} for n in [
+            "Solar systems 3 kW to 20 kW (hybrid, on-grid, off-grid)",
+            "Car batteries: dry and regular (Osaka, Exide, Phoenix, AGS, Daewoo)",
+            "Solar and UPS batteries: lithium (LiFePO4) and tubular",
+            "Solar DC accessories: DC cable, MC4, DC breakers, isolators, surge protectors",
+            "Solar panels, hybrid inverters, lithium and tubular batteries",
+            "UPS and inverter repair, battery charging"]],
+    },
     "address": {
         "@type": "PostalAddress",
         "streetAddress": "Pehlwan Goth",
@@ -394,7 +430,7 @@ home = f'''<section class="hero">
 
 <div class="facts">
   <a href="solar-packages.html"><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></a>
-  <a href="#car-batteries"><b>Car batteries</b><span>Dry and regular. Osaka, Exide, Phoenix, AGS, Daewoo</span></a>
+  <a href="batteries.html#car"><b>Car batteries</b><span>Dry and regular. Osaka, Exide, Phoenix, AGS, Daewoo</span></a>
   <a href="accessories.html"><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></a>
   <a href="our-shop.html"><b>Since 2012</b><span>Our shop in Pehlwan Goth, Karachi</span></a>
 </div>
@@ -422,6 +458,7 @@ home = f'''<section class="hero">
       <p>Dry (maintenance-free) and regular batteries for most cars, from Osaka, Exide, Phoenix, AGS and Daewoo. Bring your car to Pehlwan Goth and we check your old battery, fit the new one and test the charging before you leave.</p>
       <ul class="brands"><li>Osaka</li><li>Exide</li><li>Phoenix</li><li>AGS</li><li>Daewoo</li></ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car is: ")}" target="_blank" rel="noopener">{ICON_WA}Send your car model for a price</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+      <p><a class="more" href="batteries.html">Car and solar batteries: dry vs regular, lithium vs tubular</a></p>
     </div>
   </div>
 </section>
@@ -488,8 +525,8 @@ home = f'''<section class="hero">
 {CTA}'''
 
 page("index.html",
-     "Solar System Installation in Pehlwan Goth, Karachi | Taj Battery & Solar",
-     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation, plus dry and regular car batteries (Osaka, Exide, Phoenix, AGS, Daewoo) and UPS repair in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Solar, Car Batteries & UPS in Pehlwan Goth, Karachi | Taj Battery",
+     "Solar systems 3–20 kW installed, car and solar batteries (Osaka, Exide, Phoenix, AGS, Daewoo) and UPS repair in Pehlwan Goth, Karachi. Call 0315 2020525.",
      home, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_LD])
 
 # ================= PACKAGES =================
@@ -608,12 +645,12 @@ CATS = [
         ("Flat-roof structure", "Standard tilted frame for rooftop installations."),
         ("Rails, clamps and bolts", "End clamps, mid clamps and fasteners for panel fitting."),
     ]),
-    ("wiring", "Cables and connectors", "تار اور کنیکٹر", [
+    ("wiring", "Solar DC cables and connectors", "تار اور کنیکٹر", [
         ("Solar DC cable 4 mm² / 6 mm²", "UV-resistant cable from panels to inverter."),
         ("MC4 connectors", "Waterproof panel connectors and MC4 branch connectors."),
         ("AC cable", "Inverter to distribution board wiring."),
     ], "stock"),
-    ("protection", "Protection and safety", "حفاظتی سامان", [
+    ("protection", "DC and AC protection", "حفاظتی سامان", [
         ("DC breakers and isolators", "Switch off and protect the solar side."),
         ("Surge protector (SPD)", "Protects inverter and panels from lightning and voltage spikes."),
         ("DB / combiner box", "Weather-proof box for breakers and fuses."),
@@ -639,7 +676,7 @@ acc = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
       {crumbs_html("Accessories")}
-      <h1>Solar panels, inverters, batteries and accessories</h1>
+      <h1>Solar panels, inverters, batteries and DC accessories in Karachi</h1>
       <p class="ur ur-line" lang="ur">سولر کا تمام سامان — پینل، انورٹر، بیٹری، اسٹرکچر اور وائرنگ</p>
       <p class="lead">Buy the full system or just the parts. Prices change often, so tap any item to ask today's rate on WhatsApp.</p>
     </div>
@@ -647,15 +684,175 @@ acc = f'''<section class="hero hero-sm">
 </section>
 <section class="section">
   <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Solar DC accessories</span>
+      <h2>Everything between the panels and the inverter</h2>
+      <p>Solar DC cable (4 mm² and 6 mm²), MC4 connectors, DC breakers, DC isolators, surge protectors (SPD), combiner boxes and earthing kits, plus panels, inverters, batteries and mounting structures. Buy single items for repairs or a full set for a new system.</p>
+    </div>
     <nav class="jump" aria-label="Categories">{jump}</nav>
     <div class="stack" style="gap:44px">{"".join(cat_html)}</div>
   </div>
 </section>
 {CTA}'''
 page("accessories.html",
-     "Solar Panels, Inverters, Batteries & Accessories in Karachi | Taj Battery & Solar",
-     "N-type solar panels, hybrid and on-grid inverters, lithium and tubular batteries, solar structure, DC cable, MC4, breakers and surge protectors in Pehlwan Goth, Karachi.",
+     "Solar DC Accessories, Panels & Inverters in Karachi | Taj Battery",
+     "Solar DC cable 4 mm² and 6 mm², MC4, DC breakers, isolators and surge protectors, plus panels, inverters and batteries. Pehlwan Goth, Karachi. 0315 2020525.",
      acc, [crumbs_ld("accessories.html", "Accessories")])
+
+# ================= BATTERIES (car + solar) =================
+BRANDS = ["Osaka", "Exide", "Phoenix", "AGS", "Daewoo"]
+CARS = ["Suzuki Alto", "Suzuki Mehran", "Suzuki Cultus", "Suzuki Wagon R", "Suzuki Bolan", "Toyota Corolla", "Toyota Yaris", "Honda City", "Honda Civic", "Daihatsu Cuore", "KIA Picanto", "Hyundai, Changan and more"]
+CB_FAQ = [
+    ("How much is a car battery in Karachi?",
+     "It depends on the battery size your car needs, the brand, and whether you choose dry or regular. Prices change often, so WhatsApp your car model and year to " + WA_LOCAL + " and we reply with today's price for each brand."),
+    ("Dry or regular battery: which is better?",
+     "A dry (maintenance-free) battery never needs water top-up, so it suits people who don't want to check it. A regular battery costs less but its water level should be checked regularly. Both start the car the same way; we help you choose for your budget."),
+    ("Which battery fits my car?",
+     "Send us your car model and year. We match the right size (Ah) and terminal layout and tell you which Osaka, Exide, Phoenix, AGS or Daewoo batteries fit."),
+    ("Do you fit the battery?",
+     "Yes. Bring your car to our shop in Pehlwan Goth and we fit the new battery and check that the car's charging is working before you leave."),
+    ("Do you take the old battery?",
+     "Yes, old battery exchange is available. Ask us on WhatsApp how much your old battery is worth against the new one."),
+    ("How long does a car battery last in Karachi?",
+     "Usually around two to four years. Heat, short trips and a weak charging system shorten battery life. If your car starts slowly or needs jump starts, bring it in for a battery check."),
+    ("Lithium or tubular battery for solar?",
+     "Lithium lasts much longer, needs no maintenance and handles daily solar charging better, but costs more. Tubular costs less and works well for UPS backup, but needs water top-up and is replaced sooner. Tell us your inverter and the backup hours you need and we suggest the right one."),
+    ("Can I add a battery to my existing solar system?",
+     "Yes, if your inverter is hybrid or off-grid. A plain on-grid inverter cannot use a battery, so it needs a hybrid inverter first. Send us a photo of your inverter's label on WhatsApp and we check."),
+    ("My car won't start. Can you help?",
+     "If you are near Pehlwan Goth, call " + PHONE_LOCAL + " for a jump start. If the battery is finished, we can fit a new one at the shop."),
+]
+CB_FAQ_LD = {"@context": "https://schema.org", "@type": "FAQPage",
+             "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in CB_FAQ]}
+cb = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Batteries")}
+      <h1>Car and solar batteries in Karachi</h1>
+      <p class="lead">Dry and regular car batteries, and lithium and tubular batteries for solar and UPS, from our shop in Pehlwan Goth. Osaka, Exide, Phoenix, AGS and Daewoo.</p>
+      <div class="btn-row">
+        <a class="btn btn--sun" href="#car">Car batteries</a>
+        <a class="btn btn--sun" href="#solar">Solar batteries</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="car">
+  <div class="wrap media-row carbat">
+    {fig("exide", caption=False)}
+    <div class="stack">
+      <span class="eyebrow">Car batteries</span>
+      <h2>Car batteries: Osaka, Exide, Phoenix, AGS and Daewoo</h2>
+      <p>We have sold car batteries in Pehlwan Goth since 2012. We keep the main Pakistani brands in dry and regular types, so most cars can get a battery fitted the same day.</p>
+      <ul class="brands">{"".join("<li>%s</li>" % b for b in BRANDS)}</ul>
+      <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car model and year: ")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp your car model</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dry or regular</span>
+      <h2>Dry vs regular car battery</h2>
+      <p>Both types start your car the same way. The difference is maintenance and price.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="fit">
+        <thead><tr><th scope="col"></th><th scope="col">Dry (maintenance-free)</th><th scope="col">Regular</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Water top-up</th><td>Never needed</td><td>Check regularly</td></tr>
+          <tr><th scope="row">Price</th><td>Higher</td><td>Lower</td></tr>
+          <tr><th scope="row">Best for</th><td>No-fuss daily use</td><td>Tighter budgets</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Your car</span>
+      <h2>Batteries for popular cars in Pakistan</h2>
+      <p>Tell us your car model and year. We match the right size and terminal layout.</p>
+    </div>
+    <ul class="brands cars">{"".join("<li>%s</li>" % c for c in CARS)}</ul>
+  </div>
+</section>
+
+<section class="section section--alt" id="solar">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Solar batteries</span>
+      <h2>Solar and UPS batteries: lithium and tubular</h2>
+      <p>Batteries for hybrid solar systems, off-grid systems and home UPS. Lithium (LiFePO4) in 2.5, 5 and 10 kWh, and deep-cycle tubular batteries from Osaka, Exide, Phoenix, AGS and Daewoo. We size the battery to the hours of backup you need.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="fit">
+        <thead><tr><th scope="col"></th><th scope="col">Lithium (LiFePO4)</th><th scope="col">Tubular</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Life</th><td>Longest, many more charge cycles</td><td>Shorter</td></tr>
+          <tr><th scope="row">Maintenance</th><td>None</td><td>Water top-up</td></tr>
+          <tr><th scope="row">Price</th><td>Higher</td><td>Lower</td></tr>
+          <tr><th scope="row">Weight and space</th><td>Light, wall or rack</td><td>Heavy, floor space</td></tr>
+          <tr><th scope="row">Best for</th><td>Daily solar use, hybrid systems</td><td>UPS backup on a budget</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row" style="margin-top:20px">
+      <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a solar / UPS battery. My inverter or UPS is: ")}" target="_blank" rel="noopener">{ICON_WA}Ask about solar batteries</a>
+      <a class="btn btn--blue" href="solar-packages.html">See solar packages</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">At the shop</span>
+      <h2>Battery check, fitting and exchange</h2>
+      <p>For car, UPS and solar batteries.</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Battery check</h3><p>We test your battery and the car's charging, so you only replace the battery if it really needs it.</p></article>
+      <article class="card"><div class="icon">{ICON_WRENCH}</div><h3>Fitting and old battery exchange</h3><p>New battery fitted at the shop. Old battery exchange available.</p></article>
+      <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Jump start nearby</h3><p>Car won't start near Pehlwan Goth? Call {PHONE_LOCAL}.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Signs</span>
+      <h2>When to replace a car battery</h2>
+    </div>
+    <ul class="checklist">
+      <li>The engine turns over slowly in the morning</li>
+      <li>Headlights or dashboard lights look dim</li>
+      <li>You needed a jump start more than once</li>
+      <li>The battery is more than two or three years old</li>
+      <li>The battery case is swollen or the terminals are heavily corroded</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Questions</span>
+      <h2>Battery questions</h2>
+    </div>
+    <div class="faq">{"".join("<details><summary>%s</summary><p>%s</p></details>" % qa for qa in CB_FAQ)}</div>
+  </div>
+</section>
+{CTA}'''
+page("batteries.html",
+     "Car & Solar Batteries in Karachi: Lithium, Tubular | Taj Battery",
+     "Dry and regular car batteries, lithium and tubular solar batteries. Osaka, Exide, Phoenix, AGS, Daewoo. Pehlwan Goth, Karachi. WhatsApp 0315 2020525.",
+     cb, [crumbs_ld("batteries.html", "Batteries"), CB_FAQ_LD])
 
 # ================= SERVICES =================
 STEPS = [
@@ -763,7 +960,7 @@ svc = f'''<section class="hero hero-sm">
     </div>
     <div class="grid grid-3">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>Testing and charging</h3><p>Health check and charging for UPS, tubular and car batteries.</p></article>
-      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Old battery exchange available.</p></article>
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Old battery exchange available.</p><a class="more" href="batteries.html">Car and solar batteries</a></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Car jump start</h3><p>Car won't start nearby? Call {PHONE_LOCAL} and we'll come to you.</p></article>
     </div>
     <div class="strip strip--2" style="margin-top:20px">{fig("charging")}{fig("inside")}</div>
@@ -780,7 +977,7 @@ SVC_LD = {
     ],
 }
 page("services.html",
-     "Solar Installation, UPS Repair & Battery Services in Karachi | Taj Battery & Solar",
+     "Solar Installation & UPS Repair in Karachi | Taj Battery",
      "Solar installation, panel cleaning, UPS and inverter repair, car batteries and battery charging from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
      svc, [crumbs_ld("services.html", "Services"), SVC_LD])
 
@@ -991,7 +1188,7 @@ home_ur = f'''<section class="hero">
 
 <div class="facts">
   <a href="solar-packages.html"><b>{B("3 kW")} سے {B("20 kW")}</b><span>hybrid، on-grid اور off-grid سسٹم</span></a>
-  <a href="#car-batteries"><b>گاڑی کی بیٹریاں</b><span>ڈرائی اور عام۔ Osaka، Exide، Phoenix، AGS، Daewoo</span></a>
+  <a href="../batteries.html#car"><b>گاڑی کی بیٹریاں</b><span>ڈرائی اور عام۔ Osaka، Exide، Phoenix، AGS، Daewoo</span></a>
   <a href="../accessories.html"><b>مکمل سامان</b><span>اسٹرکچر، تاریں، بریکر، بیٹریاں</span></a>
   <a href="../our-shop.html"><b><bdi dir="ltr">2012</bdi> سے</b><span>ہماری دکان پہلوان گوٹھ، کراچی میں</span></a>
 </div>
@@ -1079,7 +1276,7 @@ home_ur = f'''<section class="hero">
 {CTA_UR}'''
 
 page("index.html",
-     "پہلوان گوٹھ، کراچی میں سولر سسٹم کی تنصیب | Taj Battery & Solar",
+     "پہلوان گوٹھ، کراچی میں سولر سسٹم، گاڑی کی بیٹریاں اور UPS | Taj Battery",
      "پہلوان گوٹھ، کراچی میں 3 kW سے 20 kW تک hybrid اور on-grid سولر پیکجز، تنصیب کے ساتھ۔ Osaka، Exide، Phoenix، AGS اور Daewoo گاڑی کی بیٹریاں اور UPS کی مرمت۔ کال یا واٹس ایپ 0315 2020525",
      home_ur, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_UR_LD], lang="ur")
 
@@ -1321,8 +1518,10 @@ page("services.html",
 
 # ================= robots / sitemap =================
 open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE)
-urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, *_ in NAV)
-urls += "".join("  <url><loc>%s</loc></url>\n" % url_for(h, "ur") for h, *_ in NAV if h in UR_PAGES)
+import datetime
+TODAY = datetime.date.today().isoformat()
+urls = "".join("  <url><loc>%s/%s</loc><lastmod>%s</lastmod></url>\n" % (SITE, "" if h == "index.html" else h, TODAY) for h, *_ in NAV)
+urls += "".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n" % (url_for(h, "ur"), TODAY) for h, *_ in NAV if h in UR_PAGES)
 open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
 
