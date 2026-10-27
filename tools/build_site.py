@@ -108,7 +108,7 @@ BUSINESS = {
     "alternateName": ["Taj Battery & Solar System", "Taj Battery Service", "Taj Battery", "تاج بیٹری سروس"],
     "image": [SITE + "/assets/img/" + IMG[k][0] for k in ("front", "inside", "charging", "ups_repair")],
     "brand": [{"@type": "Brand", "name": b} for b in ["Osaka", "Exide", "Phoenix"]],
-    "description": "Solar panel installation, hybrid and on-grid solar packages, K-Electric net metering, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
+    "description": "Solar panel installation, hybrid and on-grid solar packages, car batteries (Osaka, Exide, Phoenix), UPS repair, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
     "url": SITE + "/",
     "logo": SITE + "/assets/logo.svg",
     "telephone": PHONE_E164,
@@ -126,7 +126,7 @@ BUSINESS = {
         {"@type": "Place", "name": "Gulistan-e-Jauhar, Karachi"},
         {"@type": "City", "name": "Karachi"},
     ],
-    "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Net metering K-Electric", "Lithium battery", "Tubular battery", "Car battery"],
+    "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Car battery", "UPS repair", "Lithium battery", "Tubular battery"],
 }
 
 def ld(obj):
@@ -214,13 +214,13 @@ PACKAGES = [
          runs=["Fans, lights, LED TV", "Refrigerator", "Water motor in daytime", "Backup during load shedding"]),
     dict(key="5kW", tag="Most popular", size="5", kind="Hybrid", panels="10 × 585 W", kwp="5.85 kWp", units="≈ 24–25", month="≈ 740", roof="≈ 350 sq ft",
          inverter="6 kW hybrid", battery="5 kWh lithium",
-         runs=["One 1.5-ton inverter AC in daytime", "Fridge, fans, lights, motor", "Backup during load shedding", "Net metering optional"], top=True),
+         runs=["One 1.5-ton inverter AC in daytime", "Fridge, fans, lights, motor", "Backup during load shedding", "Monitoring on your phone"], top=True),
     dict(key="10kW", tag="Large home", size="10", kind="Hybrid / On-grid", panels="18 × 585 W", kwp="10.5 kWp", units="≈ 44", month="≈ 1,330", roof="≈ 630 sq ft",
          inverter="10 kW hybrid or on-grid", battery="Optional, 10 kWh lithium",
-         runs=["Two or three inverter ACs in daytime", "Whole-house load", "K-Electric net metering", "Cuts most of the monthly bill"]),
+         runs=["Two or three inverter ACs in daytime", "Whole-house load", "Cuts most of the monthly bill", "Net metering ready (service coming soon)"]),
     dict(key="15kW", tag="Shop / office", size="15–20", kind="On-grid, 3-phase", panels="26–34 × 585 W", kwp="15–20 kWp", units="≈ 64–84", month="≈ 1,900–2,500", roof="≈ 900–1,200 sq ft",
          inverter="3-phase on-grid", battery="Optional",
-         runs=["Shops, clinics, schools, offices", "Multiple ACs and machines", "K-Electric net metering", "Monitoring on your phone"]),
+         runs=["Shops, clinics, schools, offices", "Multiple ACs and machines", "Monitoring on your phone", "Net metering ready (service coming soon)"]),
 ]
 
 def pkg_card(p, full):
@@ -254,8 +254,10 @@ FAQ = [
      "Look at the units on your K-Electric bill. Divide your monthly units by about 125 to get the kW you need. For example, 600 units a month needs roughly a 5 kW system. We check this properly during the site visit."),
     ("Will solar work during load shedding?",
      "Only hybrid and off-grid systems keep running during load shedding, because they have a battery. A plain on-grid system switches off when K-Electric power goes, for safety. Our 3 kW and 5 kW packages are hybrid for this reason."),
+    ("Do you sell car batteries?",
+     "Yes. We sell Osaka, Exide and Phoenix car batteries for most cars and fit them at the shop in Pehlwan Goth. WhatsApp your car model for the right battery and today's price."),
     ("Do you do K-Electric net metering?",
-     "Yes. We prepare the net metering file, help with the documents and follow it up with K-Electric until the bidirectional (green) meter is installed."),
+     "Net metering is coming soon. Our on-grid and hybrid systems are net metering ready, so you can apply once the service starts. Message us on WhatsApp and we'll let you know."),
     ("Do you only work in Pehlwan Goth?",
      "Our shop is in Pehlwan Goth, near Gulistan-e-Jauhar, and we install across Karachi. Message us your area for a site visit."),
     ("What warranty do I get?",
@@ -299,7 +301,7 @@ home = f'''<section class="hero">
 
 <div class="facts">
   <div><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></div>
-  <div><b>Net metering</b><span>K-Electric file and follow-up</span></div>
+  <div><b>Car batteries</b><span>Osaka, Exide, Phoenix, fitted at the shop</span></div>
   <div><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></div>
   <div><b>Local shop</b><span>Pehlwan Goth, Karachi</span></div>
 </div>
@@ -317,7 +319,21 @@ home = f'''<section class="hero">
   </div>
 </section>
 
-<section class="section section--alt">
+<section class="section section--alt" id="car-batteries">
+  <div class="wrap media-row carbat">
+    {fig("exide", caption=False)}
+    <div class="stack">
+      <span class="eyebrow">Car batteries</span>
+      <h2>Car batteries, fitted at the shop</h2>
+      <p class="ur" lang="ur">گاڑی کی بیٹری — اوساکا، ایکسائیڈ، فینکس</p>
+      <p>Osaka, Exide and Phoenix batteries for most cars. Bring your car to Pehlwan Goth and we check your old battery, fit the new one and test the charging before you leave.</p>
+      <ul class="brands"><li>Osaka</li><li>Exide</li><li>Phoenix</li></ul>
+      <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car is: ")}" target="_blank" rel="noopener">{ICON_WA}Send your car model for a price</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
   <div class="wrap shop">
     {fig("front", caption=False)}
     <div class="stack">
@@ -331,15 +347,15 @@ home = f'''<section class="hero">
   </div>
 </section>
 
-<section class="section section--alt strip-section" aria-label="Photos from the shop">
+<section class="section strip-section" aria-label="Photos from the shop">
   <div class="wrap strip swipe">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
 </section>
 
-<section class="section">
+<section class="section section--alt">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">What we do</span>
-      <h2>Everything for solar, from the roof to the meter</h2>
+      <h2>Everything for solar, from the roof to the inverter</h2>
     </div>
     <div class="grid grid-3">
       <article class="card">
@@ -349,12 +365,12 @@ home = f'''<section class="hero">
         <p class="ur" lang="ur">گھروں، دکانوں اور دفاتر کے لیے مکمل سولر تنصیب</p>
         <a class="more" href="services.html#installation">How installation works</a>
       </article>
-      <article class="card">
+      <article class="card card--soon">
         <div class="icon">{ICON_METER}</div>
-        <h3>K-Electric net metering</h3>
-        <p>Sell extra daytime units back to K-Electric. We prepare the file and follow it up until the green meter is installed.</p>
-        <p class="ur" lang="ur">نیٹ میٹرنگ کی مکمل فائل اور پیروی</p>
-        <a class="more" href="services.html#net-metering">Net metering steps</a>
+        <h3>K-Electric net metering <span class="soon">Coming soon</span></h3>
+        <p>Sell extra daytime units back to K-Electric. Our systems are net metering ready, and the application service is coming soon.</p>
+        <p class="ur" lang="ur">نیٹ میٹرنگ — جلد آرہا ہے</p>
+        <a class="more" href="services.html#net-metering">How it will work</a>
       </article>
       <article class="card">
         <div class="icon">{ICON_PLUG}</div>
@@ -367,7 +383,7 @@ home = f'''<section class="hero">
   </div>
 </section>
 
-<section class="section section--alt">
+<section class="section">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Questions</span>
@@ -380,7 +396,7 @@ home = f'''<section class="hero">
 
 page("index.html",
      "Solar System Installation in Pehlwan Goth, Karachi | Taj Battery & Solar",
-     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation and K-Electric net metering. Solar panels, inverters, lithium batteries and accessories in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation, plus Osaka, Exide and Phoenix car batteries and UPS repair in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
      home, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_LD])
 
 # ================= PACKAGES =================
@@ -420,7 +436,7 @@ pk = f'''<section class="hero hero-sm">
         <tbody>
           <tr><th scope="row">Works in load shedding</th><td>No</td><td>Yes, from battery</td><td>Yes, from battery</td></tr>
           <tr><th scope="row">Battery</th><td>None</td><td>Lithium or tubular</td><td>Lithium or tubular</td></tr>
-          <tr><th scope="row">Net metering</th><td>Yes</td><td>Yes</td><td>No</td></tr>
+          <tr><th scope="row">Net metering (coming soon)</th><td>Ready</td><td>Ready</td><td>No</td></tr>
           <tr><th scope="row">Cost</th><td>Lowest</td><td>Medium</td><td>Medium</td></tr>
           <tr><th scope="row">Best for</th><td>Cutting a large bill</td><td>Homes with load shedding</td><td>Places without a K-Electric connection</td></tr>
         </tbody>
@@ -469,7 +485,7 @@ PKG_LD = {
 }
 page("solar-packages.html",
      "Solar Packages in Karachi: 3, 5, 10 & 15 kW | Taj Battery & Solar",
-     "3 kW, 5 kW, 10 kW and 15–20 kW solar packages with installation in Karachi. Panels, hybrid inverter, lithium battery and net metering. Shop in Pehlwan Goth. Call 0315 2020525.",
+     "3 kW, 5 kW, 10 kW and 15–20 kW solar packages with installation in Karachi. Panels, hybrid inverter and lithium battery backup. Shop in Pehlwan Goth. Call 0315 2020525.",
      pk, [crumbs_ld("solar-packages.html", "Solar Packages"), PKG_LD])
 
 # ================= ACCESSORIES =================
@@ -487,9 +503,10 @@ CATS = [
         ("Wi-Fi monitoring dongle", "See your solar production on your phone."),
     ]),
     ("batteries", "Batteries", "بیٹریاں", [
+        ("Car batteries", "Osaka, Exide and Phoenix car batteries for most cars, fitted at the shop."),
+        ("Bike batteries", "Batteries for motorbikes and rickshaws."),
         ("Lithium (LiFePO4) batteries", "2.5, 5 and 10 kWh. Long life, no water top-up."),
         ("Tubular batteries", "Osaka, Exide and Phoenix deep-cycle batteries for UPS and solar."),
-        ("Car and bike batteries", "Osaka, Exide and Phoenix car batteries, fitted at the shop."),
         ("Battery cables and lugs", "Copper cables and lugs to connect battery banks safely."),
     ], "exide"),
     ("structures", "Mounting structures", "اسٹرکچر", [
@@ -552,7 +569,7 @@ STEPS = [
     ("System design and quote", "You get a written quote with panel count, inverter, battery and structure, at the day's price."),
     ("Installation", "Our team fits the structure, panels, inverter, battery, wiring, breakers, surge protection and earthing."),
     ("Testing and handover", "We test the system, set up monitoring on your phone and show you how to use it."),
-    ("Net metering file", "If you want net metering, we prepare the K-Electric application and follow it up."),
+    ("Ready for net metering", "Your system is set up so it can be net metered later. Our net metering application service is coming soon."),
     ("After-sales support", "Call or WhatsApp us for faults, cleaning, upgrades or adding batteries later."),
 ]
 steps_html = "".join("<li><h3>%s</h3><p>%s</p></li>" % s for s in STEPS)
@@ -561,7 +578,7 @@ svc = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
       {crumbs_html("Services")}
-      <h1>Solar installation, net metering, UPS repair and battery services</h1>
+      <h1>Solar installation, UPS repair and battery services</h1>
       <p class="ur ur-line" lang="ur">سولر تنصیب، نیٹ میٹرنگ، مینٹیننس اور بیٹری سروس</p>
       <p class="lead">From the first site visit to years of after-sales support, one team handles your system.</p>
     </div>
@@ -583,8 +600,8 @@ svc = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">K-Electric</span>
-      <h2>Net metering in Karachi</h2>
-      <p>With net metering, extra units your panels produce in the day go to K-Electric and are adjusted against your bill. K-Electric installs a bidirectional (green) meter once the application is approved.</p>
+      <h2>Net metering in Karachi <span class="soon">Coming soon</span></h2>
+      <p>With net metering, extra units your panels produce in the day go to K-Electric and are adjusted against your bill. We are getting ready to handle net metering applications. Here is how it will work.</p>
       <p class="ur" lang="ur">دن میں اضافی بجلی کے الیکٹرک کو دیں اور اپنے بل میں کمی لائیں۔</p>
     </div>
     <div class="grid grid-2">
@@ -598,7 +615,7 @@ svc = f'''<section class="hero hero-sm">
         </ul>
       </article>
       <article class="card">
-        <h3>What we do</h3>
+        <h3>What we will do</h3>
         <ul>
           <li>Prepare the application and system drawings</li>
           <li>Submit the file and follow up with K-Electric</li>
@@ -665,12 +682,12 @@ SVC_LD = {
     "@type": "ItemList",
     "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "item": {"@type": "Service", "name": n, "provider": {"@id": SITE + "/#business"}, "areaServed": "Karachi"}}
-        for i, n in enumerate(["Solar system installation", "K-Electric net metering application", "Solar panel cleaning and maintenance", "UPS and inverter repair", "Battery testing, charging and replacement", "Car battery jump start"])
+        for i, n in enumerate(["Solar system installation", "Solar panel cleaning and maintenance", "UPS and inverter repair", "Battery testing, charging and replacement", "Car battery jump start"])
     ],
 }
 page("services.html",
-     "Solar Installation, Net Metering & Battery Services in Karachi | Taj Battery & Solar",
-     "Solar installation, K-Electric net metering, panel cleaning, UPS and inverter repair and battery charging from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Solar Installation, UPS Repair & Battery Services in Karachi | Taj Battery & Solar",
+     "Solar installation, panel cleaning, UPS and inverter repair, car batteries and battery charging from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
      svc, [crumbs_ld("services.html", "Services"), SVC_LD])
 
 # ================= OUR SHOP =================
@@ -695,10 +712,10 @@ shop = f'''<section class="hero hero-sm">
       <p>Taj Battery Service has served Pehlwan Goth for years. Families and shopkeepers come to us for batteries, UPS units, charging and repairs. "UPS &amp; Solar System" has been on our signboard for years too. Today we design and install complete solar systems for homes, shops and offices across Karachi.</p>
       <p>When you buy solar from us, you deal with a shop you can walk into. If something needs attention later, you know where to find us.</p>
       <ul>
-        <li>Batteries from Osaka, Exide, Phoenix and AGS</li>
+        <li>Car and UPS batteries from Osaka, Exide, Phoenix and AGS</li>
         <li>UPS and inverter repair at our own bench</li>
         <li>Solar panels, inverters, cables and accessories</li>
-        <li>Complete solar installation and K-Electric net metering</li>
+        <li>Complete solar installation (net metering coming soon)</li>
       </ul>
       <div class="btn-row"><a class="btn btn--sun" href="solar-packages.html">See solar packages</a><a class="btn btn--ghost" href="{MAPS}" target="_blank" rel="noopener">Get directions</a></div>
     </div>
@@ -721,7 +738,7 @@ page("our-shop.html",
      shop, [crumbs_ld("our-shop.html", "Our Shop")])
 
 # ================= CONTACT =================
-opts = [p["key"] + " solar system" for p in PACKAGES] + ["Accessories / parts only", "Batteries", "Net metering only", "Maintenance or repair", "Not sure yet"]
+opts = [p["key"] + " solar system" for p in PACKAGES] + ["Accessories / parts only", "Car battery", "UPS / home batteries", "Maintenance or repair", "Not sure yet"]
 opts_html = "".join("<option>%s</option>" % o for o in opts)
 con = f'''<section class="hero hero-sm">
   <div class="wrap">

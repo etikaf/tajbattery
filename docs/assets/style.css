@@ -12,13 +12,14 @@
   --brand-ink: #ffffff;
   --sun: #f5b400;
   --sun-ink: #1a1400;
-  --sun-text: #1e5bb8;
+  --sun-text: #154391;
+  --logo-bg: transparent;
   --leaf: #13873f;
   --leaf-ink: #ffffff;
   --panel: #12336b;
   --panel-2: #1a4588;
   --on-panel: #ffffff;
-  --on-panel-muted: #c3d3ee;
+  --on-panel-muted: #dfe8f7;
 
   --font-display: "Nunito", "Segoe UI", Roboto, Arial, sans-serif;
   --font-body: "Nunito", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -37,7 +38,8 @@
     --ink: #e9eef7;
     --muted: #a3b0c6;
     --line: #26355a;
-    --brand: #3b7ddd;
+    --brand: #2d6ccc;
+    --logo-bg: #ffffff;
     --sun-text: #f5c02a;
     --leaf: #1c9a4c;
     --panel: #0e2754;
@@ -52,7 +54,8 @@
   --ink: #e9eef7;
   --muted: #a3b0c6;
   --line: #26355a;
-  --brand: #3b7ddd;
+  --brand: #2d6ccc;
+  --logo-bg: #ffffff;
   --sun-text: #f5c02a;
   --leaf: #1c9a4c;
   --panel: #0e2754;
@@ -88,8 +91,8 @@ p { margin: 0; }
 .section--alt { background: var(--surface-2); }
 .stack { display: grid; gap: 16px; }
 .eyebrow {
-  font-family: var(--font-body); font-weight: 700; font-size: 0.8rem;
-  text-transform: uppercase; letter-spacing: 0.12em; color: var(--sun-text);
+  font-family: var(--font-body); font-weight: 800; font-size: 0.85rem;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--sun-text);
 }
 .section-head { display: grid; gap: 10px; max-width: 64ch; margin-bottom: 32px; }
 .section-head p { color: var(--muted); }
@@ -120,7 +123,7 @@ p { margin: 0; }
 }
 .site-header .wrap { display: flex; align-items: center; gap: 16px; min-height: 76px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
-.brand img { width: 44px; height: 44px; flex: none; }
+.brand img { width: 44px; height: 44px; flex: none; background: var(--logo-bg); border-radius: 10px; padding: 2px; }
 .brand b { display: block; font: 800 1.25rem/1.1 var(--font-display); color: var(--ink); }
 .brand span { display: block; font: 700 0.7rem/1.3 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .nav { display: flex; gap: 2px; }
@@ -128,7 +131,7 @@ p { margin: 0; }
 .nav a span { font: 700 1rem/1.3 var(--font-display); }
 .nav a small { font-size: 0.72rem; line-height: 1.9; }
 .nav a:hover { color: var(--ink); background: var(--surface-2); }
-.nav a[aria-current="page"] { color: var(--brand); background: var(--surface-2); }
+.nav a[aria-current="page"] { color: var(--sun-text); background: var(--surface-2); }
 .nav a[aria-current="page"] span { font-weight: 800; }
 .header-cta { display: flex; gap: 8px; }
 .menu { display: none; }
@@ -221,7 +224,7 @@ p { margin: 0; }
 .pkg .size small { font-size: 1.2rem; font-weight: 700; color: var(--muted); }
 .pkg .kind { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
 .pkg .units { background: var(--surface-2); border-radius: 8px; padding: 8px 12px; color: var(--muted); }
-.pkg .units b { font: 800 1.3rem/1.2 var(--font-display); color: var(--brand); }
+.pkg .units b { font: 800 1.3rem/1.2 var(--font-display); color: var(--sun-text); }
 .pkg dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; border-block: 1px solid var(--line); padding-block: 14px; font-size: 0.95rem; }
 .pkg dt { color: var(--muted); }
 .pkg dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
@@ -414,3 +417,20 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
   form.quote { padding: 18px; }
   .nap dd { font-size: 1.1rem; }
 }
+
+/* Text on the dark blue bands: yellow labels, near-white body text */
+.hero .eyebrow, .spec .eyebrow, .cta .eyebrow { color: var(--sun); }
+.hero p.lead, .cta p { color: var(--on-panel-muted); }
+
+/* "Coming soon" tag */
+.soon {
+  display: inline-block; vertical-align: middle; margin-left: 6px;
+  font: 800 0.72rem/1 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--sun); color: var(--sun-ink); padding: 5px 9px; border-radius: 999px;
+}
+.card--soon { border-style: dashed; }
+
+/* Car battery highlight */
+.carbat .ph img { aspect-ratio: 4 / 3; object-fit: cover; }
+.carbat .brands { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.carbat .brands li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; color: var(--ink); }
