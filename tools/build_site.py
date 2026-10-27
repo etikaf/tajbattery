@@ -381,10 +381,10 @@ home = f'''<section class="hero">
 </section>
 
 <div class="facts">
-  <div><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></div>
-  <div><b>Car batteries</b><span>Osaka, Exide, Phoenix, fitted at the shop</span></div>
-  <div><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></div>
-  <div><b>Since 2012</b><span>Our shop in Pehlwan Goth, Karachi</span></div>
+  <a href="solar-packages.html"><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></a>
+  <a href="#car-batteries"><b>Car batteries</b><span>Osaka, Exide, Phoenix, fitted at the shop</span></a>
+  <a href="accessories.html"><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></a>
+  <a href="our-shop.html"><b>Since 2012</b><span>Our shop in Pehlwan Goth, Karachi</span></a>
 </div>
 
 <section class="section">
@@ -977,10 +977,10 @@ home_ur = f'''<section class="hero">
 </section>
 
 <div class="facts">
-  <div><b>{B("3 kW")} سے {B("20 kW")}</b><span>hybrid، on-grid اور off-grid سسٹم</span></div>
-  <div><b>گاڑی کی بیٹریاں</b><span>Osaka، Exide، Phoenix، دکان پر فٹنگ</span></div>
-  <div><b>مکمل سامان</b><span>اسٹرکچر، تاریں، بریکر، بیٹریاں</span></div>
-  <div><b><bdi dir="ltr">2012</bdi> سے</b><span>ہماری دکان پہلوان گوٹھ، کراچی میں</span></div>
+  <a href="solar-packages.html"><b>{B("3 kW")} سے {B("20 kW")}</b><span>hybrid، on-grid اور off-grid سسٹم</span></a>
+  <a href="#car-batteries"><b>گاڑی کی بیٹریاں</b><span>Osaka، Exide، Phoenix، دکان پر فٹنگ</span></a>
+  <a href="../accessories.html"><b>مکمل سامان</b><span>اسٹرکچر، تاریں، بریکر، بیٹریاں</span></a>
+  <a href="../our-shop.html"><b><bdi dir="ltr">2012</bdi> سے</b><span>ہماری دکان پہلوان گوٹھ، کراچی میں</span></a>
 </div>
 
 <section class="section">
