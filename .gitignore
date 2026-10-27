@@ -1,0 +1,17 @@
+# Old Gemini drafts (the real site is in docs/)
+gemini pages/
+
+# Local tooling and editor settings
+.vlc-claudit/
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# Python cache from tools/build_site.py
+__pycache__/
+*.pyc
+
+# Operating-system junk
+Thumbs.db
+desktop.ini
+.DS_Store
