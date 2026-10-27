@@ -63,6 +63,7 @@ ICON_PANEL = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="cu
 ICON_METER = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M12 12l-2 4h4l-2 4"/></svg>'
 ICON_PLUG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></svg>'
 ICON_BATT = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="16" height="11" rx="2"/><path d="M21 11v3M8 12.5h5M10.5 10v5"/></svg>'
+ICON_SWAP = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-4-4M20 16H6l4 4"/></svg>'
 ICON_WRENCH = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8M14.7 6.3 13 4.6a4 4 0 0 0-5 5L3 14.6 6.4 18l5-5"/></svg>'
 
 NAV = [
@@ -372,11 +373,8 @@ def pkg_card(p, full):
     if full:
         details = f'''<dl class="num">
     <dt>Panels</dt><dd>{p['panels']}</dd>
-    <dt>Array size</dt><dd>{p['kwp']}</dd>
-    <dt>Units per month</dt><dd>{p['month']}</dd>
     <dt>Inverter</dt><dd>{p['inverter']}</dd>
     <dt>Battery</dt><dd>{p['battery']}</dd>
-    <dt>Roof space</dt><dd>{p['roof']}</dd>
   </dl>'''
     return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
   <span class="tag">{p['tag']}</span>
@@ -387,7 +385,7 @@ def pkg_card(p, full):
   <a class="btn {'btn--sun' if p.get('top') else 'btn--blue'}" href="contact.html?need={p['key']}">Get price</a>
 </article>'''
 
-EST_NOTE = '<p class="note">Units are estimates at about 4.2 units per kWp per day, a typical Karachi average after losses. Output is higher in summer and lower in winter, on dusty days and with shading. Panel wattage and brands depend on what is in stock that week.</p>'
+EST_NOTE = '<p class="note">Units per day are typical for Karachi; actual output varies by season.</p>'
 
 # ---- FAQ (home page, with FAQPage schema) ----
 FAQ = [
@@ -414,7 +412,13 @@ FAQ_LD = {
 faq_html = "".join("<details><summary>%s</summary><p>%s</p></details>" % qa for qa in FAQ)
 
 # ================= HOME =================
-home = f'''<section class="hero">
+SWAP_BANNER = f'''<a class="swap" href="{wa("Assalam o Alaikum, I want to exchange my old battery for a new one. My battery / car: ")}" target="_blank" rel="noopener">
+  <span class="swap-icon">{ICON_SWAP}</span>
+  <span class="swap-text"><b>Battery exchange:</b> give your old battery, take a new one, pay only the difference.</span>
+  <span class="swap-cta">Ask the price on WhatsApp</span>
+</a>'''
+home = f'''{SWAP_BANNER}
+<section class="hero">
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">Solar installation · Pehlwan Goth, Karachi</span>
@@ -573,43 +577,15 @@ pk = f'''<section class="hero hero-sm">
     <div class="section-head">
       <span class="eyebrow">System types</span>
       <h2>On-grid, hybrid or off-grid?</h2>
-      <p>The right type depends on whether you need power during load shedding and whether you want net metering.</p>
     </div>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th scope="col"></th><th scope="col">On-grid</th><th scope="col">Hybrid</th><th scope="col">Off-grid</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Works in load shedding</th><td>No</td><td>Yes, from battery</td><td>Yes, from battery</td></tr>
-          <tr><th scope="row">Battery</th><td>None</td><td>Lithium or tubular</td><td>Lithium or tubular</td></tr>
-          <tr><th scope="row">Net metering (coming soon)</th><td>Ready</td><td>Ready</td><td>No</td></tr>
-          <tr><th scope="row">Cost</th><td>Lowest</td><td>Medium</td><td>Medium</td></tr>
-          <tr><th scope="row">Best for</th><td>Cutting a large bill</td><td>Homes with load shedding</td><td>Places without a K-Electric connection</td></tr>
-        </tbody>
-      </table>
+    <div class="grid grid-3">
+      <article class="card"><h3>On-grid</h3><p>Lowest price. Cuts the bill, but switches off in load shedding.</p></article>
+      <article class="card"><h3>Hybrid</h3><p>Cuts the bill and keeps running in load shedding, with a battery.</p></article>
+      <article class="card"><h3>Off-grid</h3><p>For places without a K-Electric connection.</p></article>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Sizing</span>
-      <h2>Size a system from your bill</h2>
-      <p>Take the units from your K-Electric bill and divide by about 125. That gives the system size in kW.</p>
-    </div>
-    <div class="table-scroll">
-      <table class="num fit">
-        <thead><tr><th scope="col">Monthly units on your bill</th><th scope="col">Suggested system</th><th scope="col">Typical home</th></tr></thead>
-        <tbody>
-          <tr><td>Up to 350</td><td>3 kW</td><td>Fans, lights, fridge, no AC</td></tr>
-          <tr><td>350 – 700</td><td>5 kW</td><td>One AC in summer</td></tr>
-          <tr><td>700 – 1,300</td><td>10 kW</td><td>Two or three ACs</td></tr>
-          <tr><td>1,300 and above</td><td>15 – 20 kW</td><td>Large house, shop or office</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
 {CTA}'''
 
 PKG_LD = {
@@ -727,9 +703,7 @@ CB_FAQ = [
     ("Do you fit the battery?",
      "Yes. Bring your car to our shop in Pehlwan Goth and we fit the new battery and check that the car's charging is working before you leave."),
     ("Do you take the old battery?",
-     "Yes, old battery exchange is available. Ask us on WhatsApp how much your old battery is worth against the new one."),
-    ("How long does a car battery last in Karachi?",
-     "Usually around two to four years. Heat, short trips and a weak charging system shorten battery life. If your car starts slowly or needs jump starts, bring it in for a battery check."),
+     "Yes. Bring your old battery, take a new one and pay only the price difference. WhatsApp us your old battery's brand and size for the exact amount."),
     ("Lithium or tubular battery for solar?",
      "Lithium lasts much longer, needs no maintenance and handles daily solar charging better, but costs more. Tubular costs less and works well for UPS backup, but needs water top-up and is replaced sooner. Tell us your inverter and the backup hours you need and we suggest the right one."),
     ("Can I add a battery to my existing solar system?",
@@ -759,7 +733,7 @@ cb = f'''<section class="hero hero-sm">
     <div class="stack">
       <span class="eyebrow">Car batteries</span>
       <h2>Car batteries: Osaka, Exide, Phoenix, AGS and Daewoo</h2>
-      <p>We have sold car batteries in Pehlwan Goth since 2012. We keep the main Pakistani brands in dry and regular types, so most cars can get a battery fitted the same day.</p>
+      <p>Dry and regular batteries for most cars, fitted the same day at our Pehlwan Goth shop.</p>
       <ul class="brands">{"".join("<li>%s</li>" % b for b in BRANDS)}</ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car model and year: ")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp your car model</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
     </div>
@@ -768,20 +742,9 @@ cb = f'''<section class="hero hero-sm">
 
 <section class="section section--alt">
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Dry or regular</span>
-      <h2>Dry vs regular car battery</h2>
-      <p>Both types start your car the same way. The difference is maintenance and price.</p>
-    </div>
-    <div class="table-scroll">
-      <table class="fit">
-        <thead><tr><th scope="col"></th><th scope="col">Dry (maintenance-free)</th><th scope="col">Regular</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Water top-up</th><td>Never needed</td><td>Check regularly</td></tr>
-          <tr><th scope="row">Price</th><td>Higher</td><td>Lower</td></tr>
-          <tr><th scope="row">Best for</th><td>No-fuss daily use</td><td>Tighter budgets</td></tr>
-        </tbody>
-      </table>
+    <div class="duo">
+      <article class="card"><h3>Dry (maintenance-free)</h3><p>No water top-up, ever.</p></article>
+      <article class="card"><h3>Regular</h3><p>Lower price. Check the water now and then.</p></article>
     </div>
   </div>
 </section>
@@ -802,19 +765,11 @@ cb = f'''<section class="hero hero-sm">
     <div class="section-head">
       <span class="eyebrow">Solar batteries</span>
       <h2>Solar and UPS batteries: lithium and tubular</h2>
-      <p>Batteries for hybrid solar systems, off-grid systems and home UPS. Lithium (LiFePO4) in 2.5, 5 and 10 kWh, and deep-cycle tubular batteries from Osaka, Exide, Phoenix, AGS and Daewoo. We size the battery to the hours of backup you need.</p>
+      <p>Lithium in 2.5, 5 and 10 kWh, and tubular batteries from Osaka, Exide, Phoenix, AGS and Daewoo.</p>
     </div>
-    <div class="table-scroll">
-      <table class="fit">
-        <thead><tr><th scope="col"></th><th scope="col">Lithium (LiFePO4)</th><th scope="col">Tubular</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Life</th><td>Longest, many more charge cycles</td><td>Shorter</td></tr>
-          <tr><th scope="row">Maintenance</th><td>None</td><td>Water top-up</td></tr>
-          <tr><th scope="row">Price</th><td>Higher</td><td>Lower</td></tr>
-          <tr><th scope="row">Weight and space</th><td>Light, wall or rack</td><td>Heavy, floor space</td></tr>
-          <tr><th scope="row">Best for</th><td>Daily solar use, hybrid systems</td><td>UPS backup on a budget</td></tr>
-        </tbody>
-      </table>
+    <div class="duo">
+      <article class="card"><h3>Lithium (LiFePO4)</h3><p>Lasts longest, no maintenance. Best for hybrid solar.</p></article>
+      <article class="card"><h3>Tubular</h3><p>Lower price. Good for UPS backup.</p></article>
     </div>
     <div class="btn-row" style="margin-top:20px">
       <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a solar / UPS battery. My inverter or UPS is: ")}" target="_blank" rel="noopener">{ICON_WA}Ask about solar batteries</a>
@@ -832,29 +787,13 @@ cb = f'''<section class="hero hero-sm">
     </div>
     <div class="grid grid-3">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>Battery check</h3><p>We test your battery and the car's charging, so you only replace the battery if it really needs it.</p></article>
-      <article class="card"><div class="icon">{ICON_WRENCH}</div><h3>Fitting and old battery exchange</h3><p>New battery fitted at the shop. Old battery exchange available.</p></article>
+      <article class="card"><div class="icon">{ICON_WRENCH}</div><h3>Fitting and battery exchange</h3><p>Give your old battery, take a new one, pay only the difference. Fitted at the shop.</p></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Jump start nearby</h3><p>Car won't start near Pehlwan Goth? Call {PHONE_LOCAL}.</p></article>
     </div>
   </div>
 </section>
 
 <section class="section section--alt">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Signs</span>
-      <h2>When to replace a car battery</h2>
-    </div>
-    <ul class="checklist">
-      <li>The engine turns over slowly in the morning</li>
-      <li>Headlights or dashboard lights look dim</li>
-      <li>You needed a jump start more than once</li>
-      <li>The battery is more than two or three years old</li>
-      <li>The battery case is swollen or the terminals are heavily corroded</li>
-    </ul>
-  </div>
-</section>
-
-<section class="section">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Questions</span>
@@ -975,7 +914,7 @@ svc = f'''<section class="hero hero-sm">
     </div>
     <div class="grid grid-3">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>Testing and charging</h3><p>Health check and charging for UPS, tubular and car batteries.</p></article>
-      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Old battery exchange available.</p><a class="more" href="batteries.html">Car and solar batteries</a></article>
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Give your old battery and pay only the difference.</p><a class="more" href="batteries.html">Car and solar batteries</a></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Car jump start</h3><p>Car won't start nearby? Call {PHONE_LOCAL} and we'll come to you.</p></article>
     </div>
     <div class="strip strip--2" style="margin-top:20px">{fig("charging")}{fig("inside")}</div>
@@ -1121,11 +1060,8 @@ def pkg_card_ur(p, full):
     if full:
         details = f'''<dl>
     <dt>پینل</dt><dd>{B(p['panels'])}</dd>
-    <dt>کل سائز</dt><dd>{B(p['kwp'])}</dd>
-    <dt>ماہانہ یونٹ</dt><dd>{B(p['month'])}</dd>
     <dt>Inverter</dt><dd>{u['inverter']}</dd>
     <dt>بیٹری</dt><dd>{u['battery']}</dd>
-    <dt>چھت کی جگہ</dt><dd>{u['roof']}</dd>
   </dl>'''
     return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
   <span class="tag">{u['tag']}</span>
@@ -1175,7 +1111,12 @@ CTA_UR = f'''<section class="cta section">
   </div>
 </section>'''
 
-home_ur = f'''<section class="hero">
+home_ur = f'''<a class="swap" href="{wa("السلام علیکم، میں اپنی پرانی بیٹری کے بدلے نئی بیٹری لینا چاہتا ہوں۔ میری بیٹری / گاڑی: ")}" target="_blank" rel="noopener">
+  <span class="swap-icon">{ICON_SWAP}</span>
+  <span class="swap-text"><b>بیٹری ایکسچینج:</b> پرانی بیٹری دیں، نئی بیٹری لیں، صرف فرق کی رقم ادا کریں۔</span>
+  <span class="swap-cta">واٹس ایپ پر قیمت پوچھیں</span>
+</a>
+<section class="hero">
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">سولر تنصیب · پہلوان گوٹھ، کراچی</span>
@@ -1317,7 +1258,7 @@ pk_ur = f'''<section class="hero hero-sm">
       <p>ہر پیکج میں شامل: پینل، inverter، galvanised اسٹرکچر، سولر DC کیبل، MC4 کنیکٹر، DC اور AC بریکر، surge protector، ارتھنگ، تنصیب اور ٹیسٹنگ۔</p>
     </div>
     <div class="grid grid-2">{"".join(pkg_card_ur(p, True) for p in PACKAGES)}</div>
-    <p class="note" style="margin-top:16px">یونٹ کا اندازہ تقریباً {B("4.2")} یونٹ فی kWp روزانہ کے حساب سے ہے، جو نقصانات کے بعد کراچی کی عام اوسط ہے۔ گرمیوں میں پیداوار زیادہ، اور سردیوں، گرد والے دنوں اور سائے میں کم ہوتی ہے۔ پینل کی wattage اور برانڈ اس ہفتے کے اسٹاک پر منحصر ہیں۔</p>
+    <p class="note" style="margin-top:16px">روزانہ یونٹ کراچی کے عام اندازے کے مطابق ہیں، موسم کے ساتھ کم یا زیادہ ہو سکتے ہیں۔</p>
   </div>
 </section>
 
@@ -1326,43 +1267,15 @@ pk_ur = f'''<section class="hero hero-sm">
     <div class="section-head">
       <span class="eyebrow">سسٹم کی قسم</span>
       <h2>On-grid، hybrid یا off-grid؟</h2>
-      <p>صحیح قسم اس بات پر منحصر ہے کہ آپ کو لوڈ شیڈنگ میں بجلی چاہیے یا نہیں۔</p>
     </div>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th scope="col"></th><th scope="col">On-grid</th><th scope="col">Hybrid</th><th scope="col">Off-grid</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">لوڈ شیڈنگ میں چلتا ہے</th><td>نہیں</td><td>ہاں، بیٹری سے</td><td>ہاں، بیٹری سے</td></tr>
-          <tr><th scope="row">بیٹری</th><td>نہیں</td><td>lithium یا tubular</td><td>lithium یا tubular</td></tr>
-          <tr><th scope="row">Net metering (جلد آرہا ہے)</th><td>تیار</td><td>تیار</td><td>نہیں</td></tr>
-          <tr><th scope="row">قیمت</th><td>سب سے کم</td><td>درمیانی</td><td>درمیانی</td></tr>
-          <tr><th scope="row">کس کے لیے بہتر</th><td>بڑا بل کم کرنے کے لیے</td><td>لوڈ شیڈنگ والے گھروں کے لیے</td><td>جہاں K-Electric کنکشن نہ ہو</td></tr>
-        </tbody>
-      </table>
+    <div class="grid grid-3">
+      <article class="card"><h3>On-grid</h3><p>سب سے کم قیمت۔ بل کم کرتا ہے، لیکن لوڈ شیڈنگ میں بند ہو جاتا ہے۔</p></article>
+      <article class="card"><h3>Hybrid</h3><p>بل کم کرتا ہے اور بیٹری کے ساتھ لوڈ شیڈنگ میں بھی چلتا ہے۔</p></article>
+      <article class="card"><h3>Off-grid</h3><p>جہاں K-Electric کا کنکشن نہ ہو۔</p></article>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">سائز</span>
-      <h2>اپنے بل سے سسٹم کا سائز معلوم کریں</h2>
-      <p>اپنے K-Electric بل کے ماہانہ یونٹ کو تقریباً {B("125")} سے تقسیم کریں۔ جواب kW میں سسٹم کا سائز ہے۔</p>
-    </div>
-    <div class="table-scroll">
-      <table class="fit">
-        <thead><tr><th scope="col">بل پر ماہانہ یونٹ</th><th scope="col">تجویز کردہ سسٹم</th><th scope="col">عام گھر</th></tr></thead>
-        <tbody>
-          <tr><td>{B("350")} تک</td><td>{B("3 kW")}</td><td>پنکھے، لائٹیں، فریج، AC نہیں</td></tr>
-          <tr><td>{B("350 – 700")}</td><td>{B("5 kW")}</td><td>گرمیوں میں ایک AC</td></tr>
-          <tr><td>{B("700 – 1,300")}</td><td>{B("10 kW")}</td><td>دو یا تین AC</td></tr>
-          <tr><td>{B("1,300")} سے زیادہ</td><td>{B("15 – 20 kW")}</td><td>بڑا گھر، دکان یا دفتر</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
 {CTA_UR}'''
 page("solar-packages.html",
      "کراچی میں سولر پیکجز: 3، 5، 10 اور 15 kW | Taj Battery & Solar",
@@ -1514,7 +1427,7 @@ svc_ur = f'''<section class="hero hero-sm">
     </div>
     <div class="grid grid-3">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>ٹیسٹنگ اور چارجنگ</h3><p>UPS، tubular اور گاڑی کی بیٹریوں کا چیک اپ اور چارجنگ۔</p></article>
-      <article class="card"><div class="icon">{ICON_BATT}</div><h3>بیٹری کی تبدیلی</h3><p>Lithium، tubular، اور گاڑی کی ڈرائی یا عام بیٹریاں، دکان پر فٹنگ کے ساتھ۔ پرانی بیٹری کے بدلے کی سہولت بھی موجود ہے۔</p></article>
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>بیٹری کی تبدیلی</h3><p>Lithium، tubular، اور گاڑی کی ڈرائی یا عام بیٹریاں، دکان پر فٹنگ کے ساتھ۔ پرانی بیٹری دیں اور صرف فرق کی رقم ادا کریں۔</p></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>گاڑی کا جمپ اسٹارٹ</h3><p>قریب میں گاڑی اسٹارٹ نہیں ہو رہی؟ {B(PHONE_LOCAL)} پر کال کریں، ہم آپ کے پاس آئیں گے۔</p></article>
     </div>
     <div class="strip strip--2" style="margin-top:20px">{fig("charging", cap_text="گاہکوں کی بیٹریاں چارجنگ پر", pre="../")}{fig("inside", cap_text="Osaka، Exide، Phoenix اور AGS کی بیٹریاں", pre="../")}</div>

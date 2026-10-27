@@ -505,3 +505,37 @@ html:lang(ur) .steps li::before { content: "مرحلہ " counter(step); font-fam
   .header-cta { gap: 6px; }
   .lang, .menu summary { padding-inline: 10px; }
 }
+/* Two short side-by-side cards instead of comparison tables */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.duo .card { padding: 18px 20px; gap: 6px; }
+@media (max-width: 520px) { .duo { grid-template-columns: 1fr; } }
+.media-row ul.brands { display: flex; flex-wrap: wrap; padding: 0; gap: 8px; }
+
+/* Battery exchange banner (home page): bold, with a soft light sweep instead of flashing */
+.swap {
+  position: relative; overflow: hidden; isolation: isolate;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 14px;
+  padding: 12px var(--gutter); background: var(--sun); color: var(--sun-ink);
+  text-decoration: none; text-align: center; font-size: 1.02rem; line-height: 1.5;
+}
+.swap b { font-weight: 800; }
+.swap-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sun-ink); color: var(--sun); flex: none; }
+.swap-icon svg { width: 20px; height: 20px; animation: swap-turn 4.5s ease-in-out infinite; }
+.swap-cta { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.swap::after {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; width: 35%; left: -40%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  animation: swap-shine 4.5s ease-in-out infinite;
+}
+.swap:hover .swap-cta { text-decoration-thickness: 2px; }
+@keyframes swap-shine { 0% { left: -40%; } 45%, 100% { left: 110%; } }
+@keyframes swap-turn { 0%, 55% { transform: rotate(0); } 75%, 100% { transform: rotate(180deg); } }
+@media (prefers-reduced-motion: reduce) { .swap::after, .swap-icon svg { animation: none; } .swap::after { display: none; } }
+html:lang(ur) .swap { line-height: 2; }
+@media (max-width: 620px) { .swap { font-size: 0.98rem; padding-block: 10px; } }
+@media (max-width: 620px) {
+  .swap { justify-content: flex-start; text-align: start; gap: 4px 12px; }
+  .swap-icon { width: 30px; height: 30px; }
+  .swap-text { flex: 1 1 0; min-width: 0; }
+  .swap-cta { flex-basis: 100%; padding-inline-start: 42px; }
+}
