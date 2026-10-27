@@ -175,7 +175,8 @@ def page(slug, title, desc, body, jsonld=(), canonical=None):
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Nastaliq+Urdu&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap">
+<link rel="stylesheet" href="__URDU_FONT__">
 <link rel="stylesheet" href="assets/style.css">
 {blocks}
 </head>
@@ -272,9 +273,9 @@ home = f'''<section class="hero">
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">Solar installation · Pehlwan Goth, Karachi</span>
-      <h1>Solar systems that cut your K-Electric bill and keep the fans on in load shedding</h1>
+      <h1>Solar systems for homes and shops in Pehlwan Goth, Karachi</h1>
       <p class="ur ur-line" lang="ur">بجلی کے بھاری بلوں اور لوڈ شیڈنگ سے نجات — مکمل سولر سسٹم، تنصیب کے ساتھ</p>
-      <p class="lead">Complete hybrid and on-grid solar packages from 3 kW to 20 kW, installed by our own team. Panels, inverters, batteries, structure, wiring and K-Electric net metering, all from one shop.</p>
+      <p class="lead">Cut your K-Electric bill and keep the fans on in load shedding. Hybrid and on-grid packages from 3 kW to 20 kW, installed by our own team.</p>
       <div class="btn-row">
         <a class="btn btn--sun" href="solar-packages.html">See solar packages</a>
         <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I want a solar quote.")}" target="_blank" rel="noopener">{ICON_WA}Get a quote on WhatsApp</a>
@@ -311,7 +312,7 @@ home = f'''<section class="hero">
       <p>Every package includes panels, inverter, mounting structure, DC and AC wiring, breakers, surge protection, earthing and installation.</p>
       <p class="ur" lang="ur">ہر پیکج میں پینل، انورٹر، اسٹرکچر، وائرنگ، بریکر، ارتھنگ اور تنصیب شامل ہے۔</p>
     </div>
-    <div class="grid grid-4">{"".join(pkg_card(p, False) for p in PACKAGES)}</div>
+    <div class="grid grid-4 swipe">{"".join(pkg_card(p, False) for p in PACKAGES)}</div>
     <p class="note" style="margin-top:16px">Unit estimates for Karachi. <a href="solar-packages.html">Full package details and comparison</a>.</p>
   </div>
 </section>
@@ -331,7 +332,7 @@ home = f'''<section class="hero">
 </section>
 
 <section class="section section--alt strip-section" aria-label="Photos from the shop">
-  <div class="wrap strip">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
+  <div class="wrap strip swipe">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
 </section>
 
 <section class="section">
@@ -436,7 +437,7 @@ pk = f'''<section class="hero hero-sm">
       <p>Take the units from your K-Electric bill and divide by about 125. That gives the system size in kW.</p>
     </div>
     <div class="table-scroll">
-      <table class="num">
+      <table class="num fit">
         <thead><tr><th scope="col">Monthly units on your bill</th><th scope="col">Suggested system</th><th scope="col">Typical home</th></tr></thead>
         <tbody>
           <tr><td>Up to 350</td><td>3 kW</td><td>Fans, lights, fridge, no AC</td></tr>
@@ -777,4 +778,15 @@ open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSit
 urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, *_ in NAV)
 open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
+
+# Ask Google Fonts for only the Urdu letters used on the site (a few KB instead of the whole Nastaliq font).
+import glob, re
+pages = glob.glob(os.path.join(OUT, "*.html"))
+urdu = set()
+for fp in pages:
+    urdu |= set(re.findall(r"[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]", open(fp, encoding="utf-8").read()))
+font_url = "https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap&text=" + urllib.parse.quote("".join(sorted(urdu)) + " ")
+for fp in pages:
+    t = open(fp, encoding="utf-8").read().replace("__URDU_FONT__", font_url.replace("&", "&amp;"))
+    open(fp, "w", encoding="utf-8").write(t)
 print("ok")

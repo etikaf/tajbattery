@@ -25,6 +25,6 @@ python3 -m http.server -d docs 8000              # preview at http://localhost:8
 
 - Edit `tools/build_site.py` and regenerate. Don't hand-edit the generated `docs/*.html`, because the next build overwrites them. Edit CSS and JS directly in `docs/assets/`.
 - When the real domain is known, change `SITE` in the generator and rebuild. It feeds the canonical URLs, Open Graph, JSON-LD, the sitemap and robots.txt.
-- Keep the site light for slow mobile connections. Use no frameworks or icon fonts (icons are inline SVG), compress WebP images to under about 100 KB, and lazy-load anything below the fold.
+- Mobile comes first: design and check at ~360px before desktop. Keep the site light for slow mobile connections. The Urdu Nastaliq font is requested with only the letters the site uses (`text=` subset, filled in at the end of the build). Use no frameworks or icon fonts (icons are inline SVG), compress WebP images to under about 100 KB, and lazy-load anything below the fold.
 - SEO depends on consistent NAP (name, area, phone) everywhere: the `BUSINESS` JSON-LD, the footer and the contact page. Each page needs a unique `<title>` and description that name Pehlwan Goth or Karachi.
 - Don't publish prices. They change weekly, so every price call-to-action links to WhatsApp or `contact.html?need=…`.
