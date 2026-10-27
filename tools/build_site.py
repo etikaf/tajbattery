@@ -6,6 +6,18 @@ OUT = sys.argv[1]
 def version(path):
     """Short content hash, added as ?v=... so phones fetch new CSS/JS right after each change."""
     return hashlib.md5(open(os.path.join(OUT, path), "rb").read()).hexdigest()[:8]
+def check_css(path):
+    """Stop the build if style.css has unbalanced braces: one stray } makes browsers drop the next rule."""
+    css = re.sub(r"/\*.*?\*/", "", open(os.path.join(OUT, path), encoding="utf-8").read(), flags=re.S)
+    depth = 0
+    for n, line in enumerate(css.splitlines(), 1):
+        for ch in line:
+            depth += (ch == "{") - (ch == "}")
+            if depth < 0:
+                sys.exit("CSS error in %s: stray '}' near line %d" % (path, n))
+    if depth:
+        sys.exit("CSS error in %s: %d unclosed '{'" % (path, depth))
+check_css("assets/style.css")
 CSS_V = version("assets/style.css")
 JS_V = version("assets/site.js")
 SITE = "https://etikaf.github.io/tajbattery"  # change to the custom domain when bought

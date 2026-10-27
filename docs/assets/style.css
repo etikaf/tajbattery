@@ -149,7 +149,6 @@ p { margin: 0; }
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 8px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
   }
-}
   .menu[open] .nav a { grid-template-columns: 1fr auto; justify-items: start; align-items: center; padding: 10px 12px; }
   .menu[open] .nav a span { font-size: 1.05rem; }
 }
@@ -476,3 +475,12 @@ html:lang(ur) form.quote input, html:lang(ur) form.quote textarea, html:lang(ur)
 
 /* Jump links land below the sticky header */
 section[id], .cat[id], article[id] { scroll-margin-top: 90px; }
+
+/* Keep the header on one line on laptops */
+.nav a, .btn, .lang { white-space: nowrap; }
+@media (max-width: 1280px) { .header-cta .btn--call { display: none; } }
+
+/* Nastaliq needs tall lines everywhere, including the hero paragraph */
+html:lang(ur) p, html:lang(ur) li, html:lang(ur) dd, html:lang(ur) dt, html:lang(ur) .hero p.lead, html:lang(ur) .cta p { line-height: 2.2; }
+html:lang(ur) .hero-copy { gap: 16px; }
+html:lang(ur) .menu summary { padding-block: 2px 8px; line-height: 1.8; }
