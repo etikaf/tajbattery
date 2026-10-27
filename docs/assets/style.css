@@ -309,7 +309,7 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 /* Shop photo */
 .shop { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
 .shop figure { margin: 0; }
-.shop img, .shop-photo { display: block; width: 100%; border-radius: var(--radius); border: 1px solid var(--line); aspect-ratio: 619 / 510; object-fit: cover; }
+.shop img, .shop-photo img { display: block; width: 100%; border-radius: var(--radius); border: 1px solid var(--line); aspect-ratio: 619 / 510; object-fit: cover; }
 .shop p { color: var(--muted); }
 .shop p a { color: var(--sun-text); font-weight: 600; }
 @media (max-width: 860px) { .shop { grid-template-columns: 1fr; } }
@@ -323,3 +323,29 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 }
 @keyframes sunrise { from { transform: translateY(80px); opacity: 0.4; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .hero::after { animation: none; } }
+
+/* Photos */
+.ph { margin: 0; display: grid; gap: 8px; align-content: start; }
+.ph img { display: block; width: 100%; height: auto; border-radius: var(--radius); background: var(--surface-2); }
+.ph figcaption { font-size: 0.88rem; color: var(--muted); }
+.strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.strip .ph img { aspect-ratio: 4 / 3; object-fit: cover; }
+.strip--2 { grid-template-columns: 1fr 1fr; }
+.strip-section { padding-block-start: 0; }
+@media (max-width: 860px) { .strip { grid-template-columns: 1fr 1fr; } }
+.media-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.media-row p, .media-row li { color: var(--muted); }
+.media-row ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.media-row--tall { grid-template-columns: minmax(0, 0.6fr) 1fr; }
+.media-row--tall .ph img { max-height: 560px; width: auto; margin-inline: auto; }
+@media (max-width: 860px) { .media-row, .media-row--tall { grid-template-columns: 1fr; } }
+.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.gallery .ph img { aspect-ratio: 4 / 3; object-fit: cover; transition: transform .25s ease; }
+.gallery .ph { overflow: hidden; }
+.gallery .ph:hover img { transform: scale(1.02); }
+@media (max-width: 860px) { .gallery { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .gallery, .strip--2 { grid-template-columns: 1fr; } }
+.cat-media { display: grid; grid-template-columns: minmax(0, 300px) 1fr; gap: 16px; align-items: start; }
+.cat-media .ph img { aspect-ratio: 4 / 3; object-fit: cover; }
+@media (max-width: 700px) { .cat-media { grid-template-columns: 1fr; } }
+.gallery .ph img[src*="exide-sign"] { object-position: center 30%; }

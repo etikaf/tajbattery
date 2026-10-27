@@ -5,6 +5,26 @@ OUT = sys.argv[1]
 SITE = "https://etikaf.github.io/tajbattery"  # change to the custom domain when bought
 NAME = "Taj Battery Service, UPS & Solar System"
 PHOTO = "assets/img/taj-battery-shop-pehlwan-goth.webp"
+
+# Shop photos (owner's own). file, width, height, alt text, caption
+IMG = {
+    "front": ("taj-battery-shop-pehlwan-goth.webp", 619, 510, "Taj Battery Service, UPS & Solar System shop front in Pehlwan Goth, Karachi, with Osaka, Exide and Phoenix battery signs", "The shop today, Pehlwan Goth"),
+    "front_old": ("taj-battery-shop-front-exide-sign.webp", 287, 510, "Taj Battery Service UPS & Solar System shop with Exide signboard, about four years ago", "The same shop about four years ago"),
+    "inside": ("taj-battery-shop-inside-pehlwan-goth.webp", 680, 453, "Inside Taj Battery shop: shelves of Osaka, Exide, Phoenix and AGS batteries and battery chargers", "Batteries from Osaka, Exide, Phoenix and AGS"),
+    "charging": ("battery-charging-service-karachi.webp", 680, 510, "Rows of customer batteries connected to chargers at Taj Battery, Karachi", "Customer batteries on charge"),
+    "ups_repair": ("ups-repair-technician-karachi.webp", 680, 381, "Technician repairing a UPS circuit board at the Taj Battery repair bench", "UPS repair at our bench"),
+    "bench": ("ups-repair-test-bench.webp", 680, 453, "UPS and inverter test bench with sockets, meters and a battery under test", "Every repaired unit is tested on load"),
+    "exide": ("exide-n240-12v-180ah-battery.webp", 680, 453, "Exide N240 12 volt 180Ah battery box in stock", "Exide N240, 12 V 180 Ah"),
+    "stock": ("solar-panel-cables-accessories-shop.webp", 680, 510, "Solar panel, rolls of electrical cable and accessories on display in the shop", "Solar panel, cable and accessories in stock"),
+    "desk": ("solar-ups-repair-desk.webp", 680, 510, "Test board with switches and lights, UPS units and a solar panel at the repair desk", "Test board for UPS and solar units"),
+}
+
+def fig(key, cls="", eager=False, caption=True):
+    f, w, h, alt, cap = IMG[key]
+    load = 'fetchpriority="high"' if eager else 'loading="lazy"'
+    alt = alt.replace("&", "&amp;")
+    fc = "<figcaption>%s</figcaption>" % cap if caption else ""
+    return f'<figure class="ph {cls}"><img src="assets/img/{f}" width="{w}" height="{h}" {load} decoding="async" alt="{alt}">{fc}</figure>'
 PHONE_E164 = "+923152020525"  # shop line for calls, as on the signboard
 PHONE_LOCAL = "0315 2020525"
 WA = "923152020525"  # WhatsApp, same as the shop line
@@ -27,6 +47,7 @@ NAV = [
     ("solar-packages.html", "Solar Packages"),
     ("accessories.html", "Accessories"),
     ("services.html", "Services"),
+    ("our-shop.html", "Our Shop"),
     ("contact.html", "Contact"),
 ]
 
@@ -82,7 +103,7 @@ BUSINESS = {
     "@id": SITE + "/#business",
     "name": NAME,
     "alternateName": ["Taj Battery & Solar System", "Taj Battery Service", "Taj Battery", "تاج بیٹری سروس"],
-    "image": SITE + "/" + PHOTO,
+    "image": [SITE + "/assets/img/" + IMG[k][0] for k in ("front", "inside", "charging", "ups_repair")],
     "brand": [{"@type": "Brand", "name": b} for b in ["Osaka", "Exide", "Phoenix"]],
     "description": "Solar panel installation, hybrid and on-grid solar packages, K-Electric net metering, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
     "url": SITE + "/",
@@ -323,18 +344,20 @@ home = f'''<section class="hero">
 
 <section class="section">
   <div class="wrap shop">
-    <figure>
-      <img src="{PHOTO}" width="619" height="510" loading="lazy" decoding="async" alt="Taj Battery Service, UPS &amp; Solar System shop front in Pehlwan Goth, Karachi, with Osaka, Exide and Phoenix battery signs">
-    </figure>
+    {fig("front", caption=False)}
     <div class="stack">
       <span class="eyebrow">Visit the shop</span>
       <h2>A battery and solar shop Pehlwan Goth already knows</h2>
       <p>Families and shops around Pehlwan Goth already buy their batteries and UPS from us. Now we install complete solar systems too. Come and see panels, inverters and batteries in person before you buy.</p>
       <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
-      <p>We still sell Osaka, Exide and Phoenix batteries and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery services</a></p>
-      <div class="btn-row"><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+      <p>We still sell Osaka, Exide and Phoenix batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
+      <div class="btn-row"><a class="btn btn--sun btn--sm" href="our-shop.html">See inside the shop</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
     </div>
   </div>
+</section>
+
+<section class="section strip-section" aria-label="Photos from the shop">
+  <div class="wrap strip">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
 </section>
 
 <section class="section section--alt">
@@ -461,7 +484,7 @@ CATS = [
         ("Tubular batteries", "Osaka, Exide and Phoenix deep-cycle batteries for UPS and solar."),
         ("Car and bike batteries", "Osaka, Exide and Phoenix car batteries, fitted at the shop."),
         ("Battery cables and lugs", "Copper cables and lugs to connect battery banks safely."),
-    ]),
+    ], "exide"),
     ("structures", "Mounting structures", "اسٹرکچر", [
         ("Raised (elevated) structure", "Galvanised iron frame that keeps the roof usable underneath."),
         ("Flat-roof structure", "Standard tilted frame for rooftop installations."),
@@ -471,7 +494,7 @@ CATS = [
         ("Solar DC cable 4 mm² / 6 mm²", "UV-resistant cable from panels to inverter."),
         ("MC4 connectors", "Waterproof panel connectors and MC4 branch connectors."),
         ("AC cable", "Inverter to distribution board wiring."),
-    ]),
+    ], "stock"),
     ("protection", "Protection and safety", "حفاظتی سامان", [
         ("DC breakers and isolators", "Switch off and protect the solar side."),
         ("Surge protector (SPD)", "Protects inverter and panels from lightning and voltage spikes."),
@@ -482,15 +505,16 @@ CATS = [
     ("care", "Care and extras", "دیکھ بھال", [
         ("Panel cleaning kit", "Brush and pole for washing dust off panels."),
         ("Voltage stabilisers", "For ACs and fridges on unstable supply."),
+        ("Ceiling fans and LED lights", "Energy-saving fans and lights for UPS and solar homes."),
     ]),
 ]
 cat_html = []
-for cid, title, ur, items in CATS:
+for cid, title, ur, items, *photo in CATS:
     lis = "".join(
         '<li><b>%s</b><span>%s</span><a href="%s" target="_blank" rel="noopener">Ask price on WhatsApp</a></li>'
         % (n, d, wa("Assalam o Alaikum, what is the price of: " + n + "?"))
         for n, d in items)
-    cat_html.append(f'<section class="cat" id="{cid}" aria-labelledby="h-{cid}"><h3 id="h-{cid}">{title} <span class="ur" lang="ur">{ur}</span></h3><ul class="items">{lis}</ul></section>')
+    cat_html.append(f'<section class="cat" id="{cid}" aria-labelledby="h-{cid}"><h3 id="h-{cid}">{title} <span class="ur" lang="ur">{ur}</span></h3>{('<div class="cat-media">' + fig(photo[0]) + '<ul class="items">' + lis + '</ul></div>') if photo else '<ul class="items">' + lis + '</ul>'}</section>')
 jump = "".join('<a href="#%s">%s</a>' % (c[0], c[1]) for c in CATS)
 
 acc = f'''<section class="hero hero-sm">
@@ -530,7 +554,7 @@ svc = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
       {crumbs_html("Services")}
-      <h1>Solar installation, net metering and battery services</h1>
+      <h1>Solar installation, net metering, UPS repair and battery services</h1>
       <p class="ur ur-line" lang="ur">سولر تنصیب، نیٹ میٹرنگ، مینٹیننس اور بیٹری سروس</p>
       <p class="lead">From the first site visit to years of after-sales support, one team handles your system.</p>
     </div>
@@ -595,7 +619,24 @@ svc = f'''<section class="hero hero-sm">
   </div>
 </section>
 
-<section class="section section--alt" id="batteries">
+<section class="section section--alt" id="ups-repair">
+  <div class="wrap media-row">
+    {fig("ups_repair")}
+    <div class="stack">
+      <span class="eyebrow">UPS and inverter repair</span>
+      <h2>UPS repair at our own bench</h2>
+      <p>UPS not charging, beeping, or switching off under load? Bring it to the shop. We repair the circuit boards, replace faulty parts and test every unit on load before it goes back.</p>
+      <p class="ur" lang="ur">یو پی ایس اور انورٹر کی مرمت — دکان پر ٹیسٹنگ کے ساتھ</p>
+      <ul>
+        <li>Home UPS and inverter repair</li>
+        <li>Charging faults and battery pairing</li>
+        <li>Solar charge controller and hybrid inverter checks</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="batteries">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Batteries</span>
@@ -607,6 +648,7 @@ svc = f'''<section class="hero hero-sm">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Old battery exchange available.</p></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Car jump start</h3><p>Car won't start nearby? Call {PHONE_LOCAL} and we'll come to you.</p></article>
     </div>
+    <div class="strip strip--2" style="margin-top:20px">{fig("charging")}{fig("inside")}</div>
   </div>
 </section>
 {CTA}'''
@@ -616,13 +658,60 @@ SVC_LD = {
     "@type": "ItemList",
     "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "item": {"@type": "Service", "name": n, "provider": {"@id": SITE + "/#business"}, "areaServed": "Karachi"}}
-        for i, n in enumerate(["Solar system installation", "K-Electric net metering application", "Solar panel cleaning and maintenance", "Battery testing, charging and replacement", "Car battery jump start"])
+        for i, n in enumerate(["Solar system installation", "K-Electric net metering application", "Solar panel cleaning and maintenance", "UPS and inverter repair", "Battery testing, charging and replacement", "Car battery jump start"])
     ],
 }
 page("services.html",
      "Solar Installation, Net Metering & Battery Services in Karachi | Taj Battery & Solar",
-     "Solar installation, K-Electric net metering, panel cleaning, inverter repair and battery services from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Solar installation, K-Electric net metering, panel cleaning, UPS and inverter repair and battery charging from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
      svc, [crumbs_ld("services.html", "Services"), SVC_LD])
+
+# ================= OUR SHOP =================
+GALLERY = ["front", "inside", "charging", "ups_repair", "bench", "desk", "stock", "exide", "front_old"]
+shop = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Our Shop")}
+      <h1>Our shop in Pehlwan Goth, Karachi</h1>
+      <p class="ur ur-line" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم</p>
+      <p class="lead">Batteries, UPS repair and solar under one roof. Come in, see the stock and talk to the people who will install your system.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap media-row media-row--tall">
+    {fig("front_old")}
+    <div class="stack">
+      <span class="eyebrow">About us</span>
+      <h2>The neighbourhood battery and UPS shop, now doing solar</h2>
+      <p>Taj Battery Service has served Pehlwan Goth for years. Families and shopkeepers come to us for batteries, UPS units, charging and repairs. "UPS &amp; Solar System" has been on our signboard for years too. Today we design and install complete solar systems for homes, shops and offices across Karachi.</p>
+      <p>When you buy solar from us, you deal with a shop you can walk into. If something needs attention later, you know where to find us.</p>
+      <ul>
+        <li>Batteries from Osaka, Exide, Phoenix and AGS</li>
+        <li>UPS and inverter repair at our own bench</li>
+        <li>Solar panels, inverters, cables and accessories</li>
+        <li>Complete solar installation and K-Electric net metering</li>
+      </ul>
+      <div class="btn-row"><a class="btn btn--sun" href="solar-packages.html">See solar packages</a><a class="btn btn--ghost" href="{MAPS}" target="_blank" rel="noopener">Get directions</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Photos</span>
+      <h2>Inside Taj Battery</h2>
+    </div>
+    <div class="gallery">{"".join(fig(k) for k in GALLERY)}</div>
+  </div>
+</section>
+{CTA}'''
+page("our-shop.html",
+     "Our Shop in Pehlwan Goth, Karachi | Taj Battery Service, UPS & Solar",
+     "Visit Taj Battery Service, UPS & Solar System in Pehlwan Goth, Karachi. Osaka, Exide and Phoenix batteries, UPS repair, battery charging, solar panels and accessories. Call 0315 2020525.",
+     shop, [crumbs_ld("our-shop.html", "Our Shop")])
 
 # ================= CONTACT =================
 opts = [p["key"] + " solar system" for p in PACKAGES] + ["Accessories / parts only", "Batteries", "Net metering only", "Maintenance or repair", "Not sure yet"]
@@ -639,7 +728,7 @@ con = f'''<section class="hero hero-sm">
 </section>
 <section class="section">
   <div class="wrap contact">
-    <div class="stack" style="gap:24px"><img class="shop-photo" src="{PHOTO}" width="619" height="510" loading="lazy" decoding="async" alt="Taj Battery Service shop front in Pehlwan Goth, Karachi">
+    <div class="stack" style="gap:24px">{fig("front", "shop-photo", caption=False)}
     <dl class="nap">
       <div><dt>Phone</dt><dd><a href="tel:{PHONE_E164}">{PHONE_LOCAL}</a></dd></div>
       <div><dt>WhatsApp</dt><dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener">+92 315 2020525</a></dd></div>

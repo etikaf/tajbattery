@@ -9,7 +9,7 @@ This repo holds the website for **Taj Battery Service, UPS & Solar System**, a b
 ## Layout
 
 - `docs/`: the published static site, served by GitHub Pages from `main` → `/docs`. It has no build step at serve time and no JS framework.
-- `tools/build_site.py`: generates every page in `docs/`, along with `robots.txt` and `sitemap.xml`. The header, footer, contact details, `SITE` URL, packages, accessories and FAQ all live here.
+- `tools/build_site.py`: generates every page (photos are registered in its `IMG` dict and placed with `fig()`) in `docs/`, along with `robots.txt` and `sitemap.xml`. The header, footer, contact details, `SITE` URL, packages, accessories and FAQ all live here.
 - `docs/assets/style.css`: all styles, hand-written CSS using tokens in `:root` plus a dark-mode override. `docs/assets/site.js` turns the contact form into a pre-filled WhatsApp message and pre-selects a package from `?need=`.
 - `photos/`: the owner's original photos. Copy them into `docs/assets/img/` with descriptive filenames before using them.
 - `gemini pages/`: old drafts kept for reference. They are not published.
