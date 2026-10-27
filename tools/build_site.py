@@ -1,7 +1,13 @@
 # Generates the static site in docs/. Run: python3 tools/build_site.py docs
-import json, os, sys, urllib.parse
+import hashlib, json, os, sys, urllib.parse
 
 OUT = sys.argv[1]
+
+def version(path):
+    """Short content hash, added as ?v=... so phones fetch new CSS/JS right after each change."""
+    return hashlib.md5(open(os.path.join(OUT, path), "rb").read()).hexdigest()[:8]
+CSS_V = version("assets/style.css")
+JS_V = version("assets/site.js")
 SITE = "https://etikaf.github.io/tajbattery"  # change to the custom domain when bought
 NAME = "Taj Battery Service, UPS & Solar System"
 PHOTO = "assets/img/taj-battery-shop-pehlwan-goth.webp"
@@ -99,7 +105,7 @@ FOOTER = f'''<footer class="site-footer">
   <a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call</a>
   <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I want information about a solar system.")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp</a>
 </nav>
-<script src="assets/site.js" defer></script>'''
+<script src="assets/site.js?v={JS_V}" defer></script>'''
 
 BUSINESS = {
     "@type": "Store",
@@ -177,7 +183,7 @@ def page(slug, title, desc, body, jsonld=(), canonical=None):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap">
 <link rel="stylesheet" href="__URDU_FONT__">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v={CSS_V}">
 {blocks}
 </head>
 <body>
