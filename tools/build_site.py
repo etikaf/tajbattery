@@ -43,31 +43,31 @@ ICON_BATT = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="cur
 ICON_WRENCH = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8M14.7 6.3 13 4.6a4 4 0 0 0-5 5L3 14.6 6.4 18l5-5"/></svg>'
 
 NAV = [
-    ("index.html", "Home"),
-    ("solar-packages.html", "Solar Packages"),
-    ("accessories.html", "Accessories"),
-    ("services.html", "Services"),
-    ("our-shop.html", "Our Shop"),
-    ("contact.html", "Contact"),
+    ("index.html", "Home", "ہوم"),
+    ("solar-packages.html", "Packages", "سولر پیکجز"),
+    ("accessories.html", "Accessories", "سامان"),
+    ("services.html", "Services", "خدمات"),
+    ("our-shop.html", "Our Shop", "ہماری دکان"),
+    ("contact.html", "Contact", "رابطہ"),
 ]
 
 def header(current):
     links = "".join(
-        '<a href="%s"%s>%s</a>' % (href, ' aria-current="page"' if href == current else "", label)
-        for href, label in NAV
+        '<a href="%s"%s><span>%s</span><small class="ur" lang="ur">%s</small></a>' % (href, ' aria-current="page"' if href == current else "", label, ur)
+        for href, label, ur in NAV
     )
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="index.html">
-      <img src="assets/logo.svg" width="40" height="40" alt="">
-      <div><b>Taj Battery &amp; Solar</b><span>Pehlwan Goth, Karachi</span></div>
+      <img src="assets/logo.svg" width="44" height="44" alt="">
+      <div><b>Taj Battery</b><span>UPS &amp; Solar System</span></div>
     </a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="header-cta">
       <a class="btn btn--ghost btn--sm btn--call" href="tel:{PHONE_E164}">{ICON_PHONE}{PHONE_LOCAL}</a>
       <a class="btn btn--wa btn--sm" href="{wa("Assalam o Alaikum, I want information about a solar system.")}" target="_blank" rel="noopener">{ICON_WA}<span>WhatsApp</span></a>
-      <details class="menu"><summary>Menu</summary><nav class="nav" aria-label="Mobile">{links}<a href="tel:{PHONE_E164}">Call {PHONE_LOCAL}</a></nav></details>
+      <details class="menu"><summary>Menu <span class="ur" lang="ur">مینو</span></summary><nav class="nav" aria-label="Mobile">{links}</nav></details>
     </div>
   </div>
 </header>'''
@@ -81,7 +81,7 @@ FOOTER = f'''<footer class="site-footer">
     </div>
     <div>
       <h2>Pages</h2>
-      <ul>{"".join('<li><a href="%s">%s</a></li>' % n for n in NAV)}</ul>
+      <ul>{"".join('<li><a href="%s">%s</a></li>' % n[:2] for n in NAV)}</ul>
     </div>
     <div>
       <h2>Contact</h2>
@@ -92,10 +92,13 @@ FOOTER = f'''<footer class="site-footer">
         <li>Pehlwan Goth, Karachi, Sindh</li>
       </ul>
     </div>
-    <p class="legal">&copy; <span id="year">2026</span> Taj Battery &amp; Solar System, Pehlwan Goth, Karachi. Prices and stock change often, so please confirm on WhatsApp.</p>
+    <p class="legal">&copy; <span id="year">2026</span> Taj Battery Service, UPS &amp; Solar System, Pehlwan Goth, Karachi. Prices and stock change often, so please confirm on WhatsApp.</p>
   </div>
 </footer>
-<a class="fab" href="https://wa.me/{WA}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">{ICON_WA}</a>
+<nav class="callbar" aria-label="Call or WhatsApp">
+  <a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call</a>
+  <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I want information about a solar system.")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp</a>
+</nav>
 <script src="assets/site.js" defer></script>'''
 
 BUSINESS = {
@@ -168,11 +171,11 @@ def page(slug, title, desc, body, jsonld=(), canonical=None):
 <meta property="og:image:height" content="510">
 <meta property="og:image:alt" content="Taj Battery Service, UPS &amp; Solar System shop front in Pehlwan Goth, Karachi">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0f2747">
+<meta name="theme-color" content="#12336b">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Noto+Nastaliq+Urdu&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Noto+Sans:wght@400;600&family=Noto+Nastaliq+Urdu&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 {blocks}
 </head>
@@ -220,22 +223,24 @@ PACKAGES = [
 ]
 
 def pkg_card(p, full):
-    runs = "".join("<li>%s</li>" % r for r in p["runs"])
-    extra = ""
+    runs = "".join("<li>%s</li>" % r for r in (p["runs"] if full else p["runs"][:3]))
+    details = ""
     if full:
-        extra = f'<dt>Inverter</dt><dd>{p["inverter"]}</dd><dt>Battery</dt><dd>{p["battery"]}</dd><dt>Roof space</dt><dd>{p["roof"]}</dd>'
-    return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
-  <span class="tag">{p['tag']}</span>
-  <h3 class="size">{p['size']}<small> kW {p['kind']}</small></h3>
-  <dl class="num">
+        details = f'''<dl class="num">
     <dt>Panels</dt><dd>{p['panels']}</dd>
     <dt>Array size</dt><dd>{p['kwp']}</dd>
-    <dt>Units per day</dt><dd>{p['units']}</dd>
     <dt>Units per month</dt><dd>{p['month']}</dd>
-    {extra}
-  </dl>
+    <dt>Inverter</dt><dd>{p['inverter']}</dd>
+    <dt>Battery</dt><dd>{p['battery']}</dd>
+    <dt>Roof space</dt><dd>{p['roof']}</dd>
+  </dl>'''
+    return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
+  <span class="tag">{p['tag']}</span>
+  <div><h3 class="size">{p['size']}<small> kW</small></h3><p class="kind">{p['kind']}</p></div>
+  <p class="units num"><b>{p['units']}</b> units a day</p>
+  {details}
   <ul>{runs}</ul>
-  <a class="btn {'btn--sun' if p.get('top') else 'btn--ghost'}" href="contact.html?need={p['key']}">Get today's price</a>
+  <a class="btn {'btn--sun' if p.get('top') else 'btn--blue'}" href="contact.html?need={p['key']}">Get price</a>
 </article>'''
 
 EST_NOTE = '<p class="note">Units are estimates at about 4.2 units per kWp per day, a typical Karachi average after losses. Output is higher in summer and lower in winter, on dusty days and with shading. Panel wattage and brands depend on what is in stock that week.</p>'
@@ -312,6 +317,24 @@ home = f'''<section class="hero">
 </section>
 
 <section class="section section--alt">
+  <div class="wrap shop">
+    {fig("front", caption=False)}
+    <div class="stack">
+      <span class="eyebrow">Visit the shop</span>
+      <h2>A battery and solar shop Pehlwan Goth already knows</h2>
+      <p>Families and shops around Pehlwan Goth already buy their batteries and UPS from us. Now we install complete solar systems too. Come and see panels, inverters and batteries in person before you buy.</p>
+      <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
+      <p>We still sell Osaka, Exide and Phoenix batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
+      <div class="btn-row"><a class="btn btn--sun btn--sm" href="our-shop.html">See inside the shop</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt strip-section" aria-label="Photos from the shop">
+  <div class="wrap strip">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
+</section>
+
+<section class="section">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">What we do</span>
@@ -341,24 +364,6 @@ home = f'''<section class="hero">
       </article>
     </div>
   </div>
-</section>
-
-<section class="section">
-  <div class="wrap shop">
-    {fig("front", caption=False)}
-    <div class="stack">
-      <span class="eyebrow">Visit the shop</span>
-      <h2>A battery and solar shop Pehlwan Goth already knows</h2>
-      <p>Families and shops around Pehlwan Goth already buy their batteries and UPS from us. Now we install complete solar systems too. Come and see panels, inverters and batteries in person before you buy.</p>
-      <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
-      <p>We still sell Osaka, Exide and Phoenix batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
-      <div class="btn-row"><a class="btn btn--sun btn--sm" href="our-shop.html">See inside the shop</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
-    </div>
-  </div>
-</section>
-
-<section class="section strip-section" aria-label="Photos from the shop">
-  <div class="wrap strip">{fig("inside")}{fig("charging")}{fig("ups_repair")}{fig("stock")}</div>
 </section>
 
 <section class="section section--alt">
@@ -769,7 +774,7 @@ open(p404, "w", encoding="utf-8").write(s)
 
 # ================= robots / sitemap =================
 open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE)
-urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, _ in NAV)
+urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, *_ in NAV)
 open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
 print("ok")
