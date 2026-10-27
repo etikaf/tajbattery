@@ -154,6 +154,7 @@ def page(slug, title, desc, body, jsonld=(), canonical=None):
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="QKkEqgPDfiFzSFv9FVwdT5i00rvNvBLs32RvsZem934">
 <meta name="geo.region" content="PK-SD">
 <meta name="geo.placename" content="Pehlwan Goth, Karachi">
 <meta property="og:type" content="website">
