@@ -1,0 +1,685 @@
+# Generates the static site in docs/. Run: python3 tools/build_site.py docs
+import json, os, sys, urllib.parse
+
+OUT = sys.argv[1]
+SITE = "https://your-domain.example"  # replaced later with the GitHub Pages URL / real domain
+NAME = "Taj Battery Service, UPS & Solar System"
+PHOTO = "assets/img/taj-battery-shop-pehlwan-goth.webp"
+PHONE_E164 = "+923152020525"  # shop line for calls, as on the signboard
+PHONE_LOCAL = "0315 2020525"
+WA = "923152020525"  # WhatsApp, same as the shop line
+WA_LOCAL = "0315 2020525"
+MAPS = "https://share.google/svg2b4ibmyMFKSHeM"
+
+def wa(text):
+    return "https://wa.me/" + WA + "?text=" + urllib.parse.quote(text)
+
+ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>'
+ICON_PHONE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.2 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .6 3.6 1 1 0 0 1-.3 1Z"/></svg>'
+ICON_PANEL = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 4h14l3 12H2z"/><path d="M8.5 4 7 16M15.5 4 17 16M3.5 10h17M12 16v4M8 20h8"/></svg>'
+ICON_METER = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M12 12l-2 4h4l-2 4"/></svg>'
+ICON_PLUG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></svg>'
+ICON_BATT = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="7" width="16" height="11" rx="2"/><path d="M21 11v3M8 12.5h5M10.5 10v5"/></svg>'
+ICON_WRENCH = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8M14.7 6.3 13 4.6a4 4 0 0 0-5 5L3 14.6 6.4 18l5-5"/></svg>'
+
+NAV = [
+    ("index.html", "Home"),
+    ("solar-packages.html", "Solar Packages"),
+    ("accessories.html", "Accessories"),
+    ("services.html", "Services"),
+    ("contact.html", "Contact"),
+]
+
+def header(current):
+    links = "".join(
+        '<a href="%s"%s>%s</a>' % (href, ' aria-current="page"' if href == current else "", label)
+        for href, label in NAV
+    )
+    return f'''<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.svg" width="40" height="40" alt="">
+      <div><b>Taj Battery &amp; Solar</b><span>Pehlwan Goth, Karachi</span></div>
+    </a>
+    <nav class="nav" aria-label="Main">{links}</nav>
+    <div class="header-cta">
+      <a class="btn btn--ghost btn--sm btn--call" href="tel:{PHONE_E164}">{ICON_PHONE}{PHONE_LOCAL}</a>
+      <a class="btn btn--wa btn--sm" href="{wa("Assalam o Alaikum, I want information about a solar system.")}" target="_blank" rel="noopener">{ICON_WA}<span>WhatsApp</span></a>
+      <details class="menu"><summary>Menu</summary><nav class="nav" aria-label="Mobile">{links}<a href="tel:{PHONE_E164}">Call {PHONE_LOCAL}</a></nav></details>
+    </div>
+  </div>
+</header>'''
+
+FOOTER = f'''<footer class="site-footer">
+  <div class="wrap">
+    <div class="stack">
+      <h2>Taj Battery Service, UPS &amp; Solar System</h2>
+      <p>Solar systems, batteries and solar accessories for homes, shops and offices. Based in Pehlwan Goth, Karachi, and serving all of Karachi.</p>
+      <p class="ur" lang="ur">تاج بیٹری سروس — پہلوان گوٹھ، کراچی</p>
+    </div>
+    <div>
+      <h2>Pages</h2>
+      <ul>{"".join('<li><a href="%s">%s</a></li>' % n for n in NAV)}</ul>
+    </div>
+    <div>
+      <h2>Contact</h2>
+      <ul>
+        <li><a href="tel:{PHONE_E164}">Call {PHONE_LOCAL}</a></li>
+        <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp {WA_LOCAL}</a></li>
+        <li><a href="{MAPS}" target="_blank" rel="noopener">Find us on Google Maps</a></li>
+        <li>Pehlwan Goth, Karachi, Sindh</li>
+      </ul>
+    </div>
+    <p class="legal">&copy; <span id="year">2026</span> Taj Battery &amp; Solar System, Pehlwan Goth, Karachi. Prices and stock change often, so please confirm on WhatsApp.</p>
+  </div>
+</footer>
+<a class="fab" href="https://wa.me/{WA}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">{ICON_WA}</a>
+<script src="assets/site.js" defer></script>'''
+
+BUSINESS = {
+    "@type": "Store",
+    "@id": SITE + "/#business",
+    "name": NAME,
+    "alternateName": ["Taj Battery & Solar System", "Taj Battery Service", "Taj Battery", "تاج بیٹری سروس"],
+    "image": SITE + "/" + PHOTO,
+    "brand": [{"@type": "Brand", "name": b} for b in ["Osaka", "Exide", "Phoenix"]],
+    "description": "Solar panel installation, hybrid and on-grid solar packages, K-Electric net metering, lithium and tubular batteries, inverters and solar accessories in Pehlwan Goth, Karachi.",
+    "url": SITE + "/",
+    "logo": SITE + "/assets/logo.svg",
+    "telephone": PHONE_E164,
+    "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "telephone": "+" + WA, "contactOption": "WhatsApp", "areaServed": "PK", "availableLanguage": ["en", "ur"]},
+    "hasMap": MAPS,
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Pehlwan Goth",
+        "addressLocality": "Karachi",
+        "addressRegion": "Sindh",
+        "addressCountry": "PK",
+    },
+    "areaServed": [
+        {"@type": "Place", "name": "Pehlwan Goth, Karachi"},
+        {"@type": "Place", "name": "Gulistan-e-Jauhar, Karachi"},
+        {"@type": "City", "name": "Karachi"},
+    ],
+    "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Net metering K-Electric", "Lithium battery", "Tubular battery", "Car battery"],
+}
+
+def ld(obj):
+    return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False, indent=1) + "</script>"
+
+def crumbs_ld(slug, label):
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": label, "item": SITE + "/" + slug},
+        ],
+    }
+
+def crumbs_html(label):
+    return f'<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li aria-current="page">{label}</li></ol></nav>'
+
+def page(slug, title, desc, body, jsonld=(), canonical=None):
+    canonical = canonical or (SITE + "/" + ("" if slug == "index.html" else slug))
+    blocks = "\n".join(ld(j) for j in jsonld)
+    html = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{canonical}">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK-SD">
+<meta name="geo.placename" content="Pehlwan Goth, Karachi">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{NAME}">
+<meta property="og:locale" content="en_PK">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{SITE}/{PHOTO}">
+<meta property="og:image:width" content="619">
+<meta property="og:image:height" content="510">
+<meta property="og:image:alt" content="Taj Battery Service, UPS &amp; Solar System shop front in Pehlwan Goth, Karachi">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f2747">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Noto+Nastaliq+Urdu&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+{blocks}
+</head>
+<body>
+{header(slug)}
+<main id="main">
+{body}
+</main>
+{FOOTER}
+</body>
+</html>
+'''
+    with open(os.path.join(OUT, slug), "w", encoding="utf-8") as f:
+        f.write(html)
+
+CTA = f'''<section class="cta section">
+  <div class="wrap">
+    <div class="stack">
+      <h2>Send us your electricity bill. We'll size your system.</h2>
+      <p>WhatsApp a photo of your latest K-Electric bill and tell us what you want to run. We reply with a system size and today's price.</p>
+      <p class="ur" lang="ur">اپنا بجلی کا بل واٹس ایپ کریں، ہم آپ کو مناسب سولر سسٹم اور آج کی قیمت بتائیں گے۔</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I am sending my electricity bill for a solar quote.")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp your bill</a>
+      <a class="btn btn--ghost" style="color:var(--on-panel)" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a>
+    </div>
+  </div>
+</section>'''
+
+# ---- Packages data (shared by home and packages page) ----
+# Output estimate: ~4.2 units (kWh) per kWp per day, a typical Karachi average after losses.
+PACKAGES = [
+    dict(key="3kW", tag="Small home", size="3", kind="Hybrid", panels="6 × 585 W", kwp="3.51 kWp", units="≈ 14–15", month="≈ 440", roof="≈ 210 sq ft",
+         inverter="4 kW hybrid", battery="5 kWh lithium or 2 tubular",
+         runs=["Fans, lights, LED TV", "Refrigerator", "Water motor in daytime", "Backup during load shedding"]),
+    dict(key="5kW", tag="Most popular", size="5", kind="Hybrid", panels="10 × 585 W", kwp="5.85 kWp", units="≈ 24–25", month="≈ 740", roof="≈ 350 sq ft",
+         inverter="6 kW hybrid", battery="5 kWh lithium",
+         runs=["One 1.5-ton inverter AC in daytime", "Fridge, fans, lights, motor", "Backup during load shedding", "Net metering optional"], top=True),
+    dict(key="10kW", tag="Large home", size="10", kind="Hybrid / On-grid", panels="18 × 585 W", kwp="10.5 kWp", units="≈ 44", month="≈ 1,330", roof="≈ 630 sq ft",
+         inverter="10 kW hybrid or on-grid", battery="Optional, 10 kWh lithium",
+         runs=["Two or three inverter ACs in daytime", "Whole-house load", "K-Electric net metering", "Cuts most of the monthly bill"]),
+    dict(key="15kW", tag="Shop / office", size="15–20", kind="On-grid, 3-phase", panels="26–34 × 585 W", kwp="15–20 kWp", units="≈ 64–84", month="≈ 1,900–2,500", roof="≈ 900–1,200 sq ft",
+         inverter="3-phase on-grid", battery="Optional",
+         runs=["Shops, clinics, schools, offices", "Multiple ACs and machines", "K-Electric net metering", "Monitoring on your phone"]),
+]
+
+def pkg_card(p, full):
+    runs = "".join("<li>%s</li>" % r for r in p["runs"])
+    extra = ""
+    if full:
+        extra = f'<dt>Inverter</dt><dd>{p["inverter"]}</dd><dt>Battery</dt><dd>{p["battery"]}</dd><dt>Roof space</dt><dd>{p["roof"]}</dd>'
+    return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
+  <span class="tag">{p['tag']}</span>
+  <h3 class="size">{p['size']}<small> kW {p['kind']}</small></h3>
+  <dl class="num">
+    <dt>Panels</dt><dd>{p['panels']}</dd>
+    <dt>Array size</dt><dd>{p['kwp']}</dd>
+    <dt>Units per day</dt><dd>{p['units']}</dd>
+    <dt>Units per month</dt><dd>{p['month']}</dd>
+    {extra}
+  </dl>
+  <ul>{runs}</ul>
+  <a class="btn {'btn--sun' if p.get('top') else 'btn--ghost'}" href="contact.html?need={p['key']}">Get today's price</a>
+</article>'''
+
+EST_NOTE = '<p class="note">Units are estimates at about 4.2 units per kWp per day, a typical Karachi average after losses. Output is higher in summer and lower in winter, on dusty days and with shading. Panel wattage and brands depend on what is in stock that week.</p>'
+
+# ---- FAQ (home page, with FAQPage schema) ----
+FAQ = [
+    ("How much does a solar system cost in Karachi?",
+     "Panel, inverter and battery prices change almost every week, so we quote on the day. Send your bill and the appliances you want to run on WhatsApp at " + WA_LOCAL + " and we reply with a price for the full installed system."),
+    ("What size of solar system do I need?",
+     "Look at the units on your K-Electric bill. Divide your monthly units by about 125 to get the kW you need. For example, 600 units a month needs roughly a 5 kW system. We check this properly during the site visit."),
+    ("Will solar work during load shedding?",
+     "Only hybrid and off-grid systems keep running during load shedding, because they have a battery. A plain on-grid system switches off when K-Electric power goes, for safety. Our 3 kW and 5 kW packages are hybrid for this reason."),
+    ("Do you do K-Electric net metering?",
+     "Yes. We prepare the net metering file, help with the documents and follow it up with K-Electric until the bidirectional (green) meter is installed."),
+    ("Do you only work in Pehlwan Goth?",
+     "Our shop is in Pehlwan Goth, near Gulistan-e-Jauhar, and we install across Karachi. Message us your area for a site visit."),
+    ("What warranty do I get?",
+     "Panels, inverters and batteries carry the manufacturer's warranty, and we hand over the warranty cards with the system. Ask us about the warranty of the exact brand you choose."),
+]
+FAQ_LD = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ],
+}
+faq_html = "".join("<details><summary>%s</summary><p>%s</p></details>" % qa for qa in FAQ)
+
+# ================= HOME =================
+home = f'''<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">Solar installation · Pehlwan Goth, Karachi</span>
+      <h1>Solar systems that cut your K-Electric bill and keep the fans on in load shedding</h1>
+      <p class="ur ur-line" lang="ur">بجلی کے بھاری بلوں اور لوڈ شیڈنگ سے نجات — مکمل سولر سسٹم، تنصیب کے ساتھ</p>
+      <p class="lead">Complete hybrid and on-grid solar packages from 3 kW to 20 kW, installed by our own team. Panels, inverters, batteries, structure, wiring and K-Electric net metering, all from one shop.</p>
+      <div class="btn-row">
+        <a class="btn btn--sun" href="solar-packages.html">See solar packages</a>
+        <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I want a solar quote.")}" target="_blank" rel="noopener">{ICON_WA}Get a quote on WhatsApp</a>
+      </div>
+    </div>
+    <aside class="spec" aria-labelledby="spec-title">
+      <span class="eyebrow">Our most popular system</span>
+      <h2 id="spec-title">5 kW hybrid for a family home</h2>
+      <dl>
+        <dt>Solar panels</dt><dd>10 × 585 W N-type</dd>
+        <dt>Array size</dt><dd>5.85 kWp</dd>
+        <dt>Inverter</dt><dd>6 kW hybrid</dd>
+        <dt>Battery</dt><dd>5 kWh lithium</dd>
+        <dt>Units per day</dt><dd class="big">≈ 24</dd>
+        <dt>Runs</dt><dd>1.5-ton inverter AC by day</dd>
+      </dl>
+      <small>Estimate for Karachi sunshine. Actual output depends on season, dust and shading.</small>
+    </aside>
+  </div>
+</section>
+
+<div class="facts">
+  <div><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></div>
+  <div><b>Net metering</b><span>K-Electric file and follow-up</span></div>
+  <div><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></div>
+  <div><b>Local shop</b><span>Pehlwan Goth, Karachi</span></div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Solar packages</span>
+      <h2>Pick a system by the load you want to run</h2>
+      <p>Every package includes panels, inverter, mounting structure, DC and AC wiring, breakers, surge protection, earthing and installation.</p>
+      <p class="ur" lang="ur">ہر پیکج میں پینل، انورٹر، اسٹرکچر، وائرنگ، بریکر، ارتھنگ اور تنصیب شامل ہے۔</p>
+    </div>
+    <div class="grid grid-4">{"".join(pkg_card(p, False) for p in PACKAGES)}</div>
+    <p class="note" style="margin-top:16px">Unit estimates for Karachi. <a href="solar-packages.html">Full package details and comparison</a>.</p>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>Everything for solar, from the roof to the meter</h2>
+    </div>
+    <div class="grid grid-3">
+      <article class="card">
+        <div class="icon">{ICON_PANEL}</div>
+        <h3>Solar installation</h3>
+        <p>Site visit, load calculation, raised or flat-roof structure, neat wiring and a tested handover with app monitoring.</p>
+        <p class="ur" lang="ur">گھروں، دکانوں اور دفاتر کے لیے مکمل سولر تنصیب</p>
+        <a class="more" href="services.html#installation">How installation works</a>
+      </article>
+      <article class="card">
+        <div class="icon">{ICON_METER}</div>
+        <h3>K-Electric net metering</h3>
+        <p>Sell extra daytime units back to K-Electric. We prepare the file and follow it up until the green meter is installed.</p>
+        <p class="ur" lang="ur">نیٹ میٹرنگ کی مکمل فائل اور پیروی</p>
+        <a class="more" href="services.html#net-metering">Net metering steps</a>
+      </article>
+      <article class="card">
+        <div class="icon">{ICON_PLUG}</div>
+        <h3>Solar accessories</h3>
+        <p>Panels, hybrid and on-grid inverters, lithium and tubular batteries, structures, solar cable, MC4, DC breakers and surge protectors.</p>
+        <p class="ur" lang="ur">سولر کا تمام سامان ایک ہی جگہ</p>
+        <a class="more" href="accessories.html">Browse accessories</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap shop">
+    <figure>
+      <img src="{PHOTO}" width="619" height="510" loading="lazy" decoding="async" alt="Taj Battery Service, UPS &amp; Solar System shop front in Pehlwan Goth, Karachi, with Osaka, Exide and Phoenix battery signs">
+    </figure>
+    <div class="stack">
+      <span class="eyebrow">Visit the shop</span>
+      <h2>A battery and solar shop Pehlwan Goth already knows</h2>
+      <p>Families and shops around Pehlwan Goth already buy their batteries and UPS from us. Now we install complete solar systems too. Come and see panels, inverters and batteries in person before you buy.</p>
+      <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
+      <p>We still sell Osaka, Exide and Phoenix batteries and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery services</a></p>
+      <div class="btn-row"><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Questions</span>
+      <h2>Common questions about solar in Karachi</h2>
+    </div>
+    <div class="faq">{faq_html}</div>
+  </div>
+</section>
+{CTA}'''
+
+page("index.html",
+     "Solar System Installation in Pehlwan Goth, Karachi | Taj Battery & Solar",
+     "Hybrid and on-grid solar packages from 3 kW to 20 kW with installation and K-Electric net metering. Solar panels, inverters, lithium batteries and accessories in Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     home, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_LD])
+
+# ================= PACKAGES =================
+pk = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Solar Packages")}
+      <h1>Solar packages for Karachi homes and shops</h1>
+      <p class="ur ur-line" lang="ur">سولر پیکجز — ۳ کلوواٹ سے ۲۰ کلوواٹ تک، تنصیب کے ساتھ</p>
+      <p class="lead">Four standard systems with installation included. Each one can be adjusted to your roof, your load and your budget.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Packages</span>
+      <h2>Installed system packages</h2>
+      <p>Included in every package: panels, inverter, galvanised mounting structure, solar DC cable, MC4 connectors, DC and AC breakers, surge protector, earthing, installation and testing.</p>
+    </div>
+    <div class="grid grid-2">{"".join(pkg_card(p, True) for p in PACKAGES)}</div>
+    <div style="margin-top:16px">{EST_NOTE}</div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">System types</span>
+      <h2>On-grid, hybrid or off-grid?</h2>
+      <p>The right type depends on whether you need power during load shedding and whether you want net metering.</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">On-grid</th><th scope="col">Hybrid</th><th scope="col">Off-grid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Works in load shedding</th><td>No</td><td>Yes, from battery</td><td>Yes, from battery</td></tr>
+          <tr><th scope="row">Battery</th><td>None</td><td>Lithium or tubular</td><td>Lithium or tubular</td></tr>
+          <tr><th scope="row">Net metering</th><td>Yes</td><td>Yes</td><td>No</td></tr>
+          <tr><th scope="row">Cost</th><td>Lowest</td><td>Medium</td><td>Medium</td></tr>
+          <tr><th scope="row">Best for</th><td>Cutting a large bill</td><td>Homes with load shedding</td><td>Places without a K-Electric connection</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Sizing</span>
+      <h2>Size a system from your bill</h2>
+      <p>Take the units from your K-Electric bill and divide by about 125. That gives the system size in kW.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="num">
+        <thead><tr><th scope="col">Monthly units on your bill</th><th scope="col">Suggested system</th><th scope="col">Typical home</th></tr></thead>
+        <tbody>
+          <tr><td>Up to 350</td><td>3 kW</td><td>Fans, lights, fridge, no AC</td></tr>
+          <tr><td>350 – 700</td><td>5 kW</td><td>One AC in summer</td></tr>
+          <tr><td>700 – 1,300</td><td>10 kW</td><td>Two or three ACs</td></tr>
+          <tr><td>1,300 and above</td><td>15 – 20 kW</td><td>Large house, shop or office</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{CTA}'''
+
+PKG_LD = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Solar system installation",
+    "provider": {"@id": SITE + "/#business"},
+    "areaServed": {"@type": "City", "name": "Karachi"},
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Solar packages",
+        "itemListElement": [
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "%s kW %s solar system" % (p["size"], p["kind"]),
+             "description": "%s panels (%s), %s inverter, about %s units per day in Karachi." % (p["panels"], p["kwp"], p["inverter"], p["units"].replace("≈ ", ""))}}
+            for p in PACKAGES
+        ],
+    },
+}
+page("solar-packages.html",
+     "Solar Packages in Karachi: 3, 5, 10 & 15 kW | Taj Battery & Solar",
+     "3 kW, 5 kW, 10 kW and 15–20 kW solar packages with installation in Karachi. Panels, hybrid inverter, lithium battery and net metering. Shop in Pehlwan Goth. Call 0315 2020525.",
+     pk, [crumbs_ld("solar-packages.html", "Solar Packages"), PKG_LD])
+
+# ================= ACCESSORIES =================
+CATS = [
+    ("panels", "Solar panels", "سولر پینل", [
+        ("N-type mono panels", "580–620 W class, A-grade. Brands such as Longi, Jinko and JA Solar, depending on stock."),
+        ("Bifacial panels", "Generate extra from light reflected off the roof. Best on raised structures."),
+        ("Used and B-grade panels", "Lower-cost option. Ask us what's available and what warranty applies."),
+    ]),
+    ("inverters", "Inverters", "انورٹر", [
+        ("Hybrid inverters", "Solar, battery and K-Electric together. 4 kW to 12 kW."),
+        ("On-grid inverters", "For net metering systems. Single-phase and 3-phase."),
+        ("Home UPS and solar UPS", "Backup for fans and lights. Sales, repair and battery pairing."),
+        ("Off-grid inverters", "For places without a K-Electric connection."),
+        ("Wi-Fi monitoring dongle", "See your solar production on your phone."),
+    ]),
+    ("batteries", "Batteries", "بیٹریاں", [
+        ("Lithium (LiFePO4) batteries", "2.5, 5 and 10 kWh. Long life, no water top-up."),
+        ("Tubular batteries", "Osaka, Exide and Phoenix deep-cycle batteries for UPS and solar."),
+        ("Car and bike batteries", "Osaka, Exide and Phoenix car batteries, fitted at the shop."),
+        ("Battery cables and lugs", "Copper cables and lugs to connect battery banks safely."),
+    ]),
+    ("structures", "Mounting structures", "اسٹرکچر", [
+        ("Raised (elevated) structure", "Galvanised iron frame that keeps the roof usable underneath."),
+        ("Flat-roof structure", "Standard tilted frame for rooftop installations."),
+        ("Rails, clamps and bolts", "End clamps, mid clamps and fasteners for panel fitting."),
+    ]),
+    ("wiring", "Cables and connectors", "تار اور کنیکٹر", [
+        ("Solar DC cable 4 mm² / 6 mm²", "UV-resistant cable from panels to inverter."),
+        ("MC4 connectors", "Waterproof panel connectors and MC4 branch connectors."),
+        ("AC cable", "Inverter to distribution board wiring."),
+    ]),
+    ("protection", "Protection and safety", "حفاظتی سامان", [
+        ("DC breakers and isolators", "Switch off and protect the solar side."),
+        ("Surge protector (SPD)", "Protects inverter and panels from lightning and voltage spikes."),
+        ("DB / combiner box", "Weather-proof box for breakers and fuses."),
+        ("Earthing kit", "Copper earth rod and wire. Every system needs proper earthing."),
+        ("Changeover switch", "Switch loads between solar, K-Electric and generator."),
+    ]),
+    ("care", "Care and extras", "دیکھ بھال", [
+        ("Panel cleaning kit", "Brush and pole for washing dust off panels."),
+        ("Voltage stabilisers", "For ACs and fridges on unstable supply."),
+    ]),
+]
+cat_html = []
+for cid, title, ur, items in CATS:
+    lis = "".join(
+        '<li><b>%s</b><span>%s</span><a href="%s" target="_blank" rel="noopener">Ask price on WhatsApp</a></li>'
+        % (n, d, wa("Assalam o Alaikum, what is the price of: " + n + "?"))
+        for n, d in items)
+    cat_html.append(f'<section class="cat" id="{cid}" aria-labelledby="h-{cid}"><h3 id="h-{cid}">{title} <span class="ur" lang="ur">{ur}</span></h3><ul class="items">{lis}</ul></section>')
+jump = "".join('<a href="#%s">%s</a>' % (c[0], c[1]) for c in CATS)
+
+acc = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Accessories")}
+      <h1>Solar panels, inverters, batteries and accessories</h1>
+      <p class="ur ur-line" lang="ur">سولر کا تمام سامان — پینل، انورٹر، بیٹری، اسٹرکچر اور وائرنگ</p>
+      <p class="lead">Buy the full system or just the parts. Prices change often, so tap any item to ask today's rate on WhatsApp.</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <nav class="jump" aria-label="Categories">{jump}</nav>
+    <div class="stack" style="gap:44px">{"".join(cat_html)}</div>
+  </div>
+</section>
+{CTA}'''
+page("accessories.html",
+     "Solar Panels, Inverters, Batteries & Accessories in Karachi | Taj Battery & Solar",
+     "N-type solar panels, hybrid and on-grid inverters, lithium and tubular batteries, solar structure, DC cable, MC4, breakers and surge protectors in Pehlwan Goth, Karachi.",
+     acc, [crumbs_ld("accessories.html", "Accessories")])
+
+# ================= SERVICES =================
+STEPS = [
+    ("Site visit and load check", "We visit your home or shop, check the roof, shading and direction, and list the appliances you want to run."),
+    ("System design and quote", "You get a written quote with panel count, inverter, battery and structure, at the day's price."),
+    ("Installation", "Our team fits the structure, panels, inverter, battery, wiring, breakers, surge protection and earthing."),
+    ("Testing and handover", "We test the system, set up monitoring on your phone and show you how to use it."),
+    ("Net metering file", "If you want net metering, we prepare the K-Electric application and follow it up."),
+    ("After-sales support", "Call or WhatsApp us for faults, cleaning, upgrades or adding batteries later."),
+]
+steps_html = "".join("<li><h3>%s</h3><p>%s</p></li>" % s for s in STEPS)
+
+svc = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Services")}
+      <h1>Solar installation, net metering and battery services</h1>
+      <p class="ur ur-line" lang="ur">سولر تنصیب، نیٹ میٹرنگ، مینٹیننس اور بیٹری سروس</p>
+      <p class="lead">From the first site visit to years of after-sales support, one team handles your system.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="installation">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Installation</span>
+      <h2>How a solar installation works</h2>
+      <p>A typical 5 kW home system is installed in one to two days after the order is confirmed.</p>
+    </div>
+    <ol class="steps">{steps_html}</ol>
+  </div>
+</section>
+
+<section class="section section--alt" id="net-metering">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">K-Electric</span>
+      <h2>Net metering in Karachi</h2>
+      <p>With net metering, extra units your panels produce in the day go to K-Electric and are adjusted against your bill. K-Electric installs a bidirectional (green) meter once the application is approved.</p>
+      <p class="ur" lang="ur">دن میں اضافی بجلی کے الیکٹرک کو دیں اور اپنے بل میں کمی لائیں۔</p>
+    </div>
+    <div class="grid grid-2">
+      <article class="card">
+        <h3>What you need</h3>
+        <ul>
+          <li>Copy of CNIC of the meter owner</li>
+          <li>Latest K-Electric bill</li>
+          <li>Proof of ownership or tenancy of the property</li>
+          <li>An installed on-grid or hybrid system</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>What we do</h3>
+        <ul>
+          <li>Prepare the application and system drawings</li>
+          <li>Submit the file and follow up with K-Electric</li>
+          <li>Coordinate the inspection</li>
+          <li>Stay with you until the green meter is fitted</li>
+        </ul>
+      </article>
+    </div>
+    <p class="note" style="margin-top:16px">Net metering rules and buy-back rates are set by NEPRA and can change. Ask us about the current rules before you decide.</p>
+  </div>
+</section>
+
+<section class="section" id="maintenance">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Maintenance</span>
+      <h2>Keep your system producing</h2>
+      <p>Karachi dust can cut panel output noticeably within a few weeks. Regular cleaning and checks keep your units up.</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><div class="icon">{ICON_PANEL}</div><h3>Panel washing</h3><p>Washing and inspection of panels, clamps and connectors.</p></article>
+      <article class="card"><div class="icon">{ICON_WRENCH}</div><h3>Fault repair</h3><p>Inverter error codes, tripping breakers, low output and wiring faults.</p></article>
+      <article class="card"><div class="icon">{ICON_PLUG}</div><h3>Upgrades and shifting</h3><p>Add panels or batteries, change the inverter, or move a system to a new house.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="batteries">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Batteries</span>
+      <h2>Battery services</h2>
+      <p>Bring your battery to the shop in Pehlwan Goth, or call us.</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Testing and charging</h3><p>Health check and charging for UPS, tubular and car batteries.</p></article>
+      <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Old battery exchange available.</p></article>
+      <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Car jump start</h3><p>Car won't start nearby? Call {PHONE_LOCAL} and we'll come to you.</p></article>
+    </div>
+  </div>
+</section>
+{CTA}'''
+
+SVC_LD = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": i + 1, "item": {"@type": "Service", "name": n, "provider": {"@id": SITE + "/#business"}, "areaServed": "Karachi"}}
+        for i, n in enumerate(["Solar system installation", "K-Electric net metering application", "Solar panel cleaning and maintenance", "Battery testing, charging and replacement", "Car battery jump start"])
+    ],
+}
+page("services.html",
+     "Solar Installation, Net Metering & Battery Services in Karachi | Taj Battery & Solar",
+     "Solar installation, K-Electric net metering, panel cleaning, inverter repair and battery services from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     svc, [crumbs_ld("services.html", "Services"), SVC_LD])
+
+# ================= CONTACT =================
+opts = [p["key"] + " solar system" for p in PACKAGES] + ["Accessories / parts only", "Batteries", "Net metering only", "Maintenance or repair", "Not sure yet"]
+opts_html = "".join("<option>%s</option>" % o for o in opts)
+con = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("Contact")}
+      <h1>Contact Taj Battery &amp; Solar in Pehlwan Goth</h1>
+      <p class="ur ur-line" lang="ur">ہم سے رابطہ کریں — کال یا واٹس ایپ</p>
+      <p class="lead">Call, WhatsApp, or visit the shop. Fill in the form and it opens WhatsApp with your details ready to send.</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap contact">
+    <div class="stack" style="gap:24px"><img class="shop-photo" src="{PHOTO}" width="619" height="510" loading="lazy" decoding="async" alt="Taj Battery Service shop front in Pehlwan Goth, Karachi">
+    <dl class="nap">
+      <div><dt>Phone</dt><dd><a href="tel:{PHONE_E164}">{PHONE_LOCAL}</a></dd></div>
+      <div><dt>WhatsApp</dt><dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener">+92 315 2020525</a></dd></div>
+      <div><dt>Shop</dt><dd>Pehlwan Goth, Karachi, Sindh</dd></div>
+      <div><dt>Map</dt><dd><a href="{MAPS}" target="_blank" rel="noopener">Open in Google Maps</a></dd></div>
+      <div><dt>Service area</dt><dd style="font-weight:400">Pehlwan Goth, Gulistan-e-Jauhar and all of Karachi</dd></div>
+    </dl></div>
+    <form class="quote" id="quote-form">
+      <h2 style="font-size:1.6rem">Request a quote</h2>
+      <label for="name">Your name<input id="name" name="name" required autocomplete="name"></label>
+      <label for="area">Area in Karachi<input id="area" name="area" required placeholder="e.g. Pehlwan Goth, Gulistan-e-Jauhar"></label>
+      <label for="need">What do you need?<select id="need" name="need">{opts_html}</select></label>
+      <label for="bill">Monthly bill or units <span class="hint">(optional)</span><input id="bill" name="bill" placeholder="e.g. 650 units or Rs 40,000"></label>
+      <label for="msg">Anything else <span class="hint">(optional)</span><textarea id="msg" name="msg" placeholder="Appliances you want to run, roof type, timing"></textarea></label>
+      <button class="btn btn--wa" type="submit">{ICON_WA}Send on WhatsApp</button>
+    </form>
+  </div>
+</section>'''
+page("contact.html",
+     "Contact Taj Battery & Solar, Pehlwan Goth Karachi | 0315 2020525",
+     "Call or WhatsApp 0315 2020525 for solar quotes, batteries and accessories. Taj Battery & Solar System, Pehlwan Goth, Karachi.",
+     con, [crumbs_ld("contact.html", "Contact"), dict({"@context": "https://schema.org"}, **BUSINESS)])
+
+# ================= 404 =================
+nf = f'''<section class="hero hero-sm">
+  <div class="wrap"><div class="hero-copy">
+    <h1>Page not found</h1>
+    <p class="lead">This page doesn't exist. Try the solar packages or contact us on WhatsApp.</p>
+    <div class="btn-row"><a class="btn btn--sun" href="index.html">Go to home page</a><a class="btn btn--ghost" href="solar-packages.html">Solar packages</a></div>
+  </div></div>
+</section>'''
+page("404.html", "Page not found | Taj Battery & Solar", "Page not found.", nf)
+# 404 must not be indexed
+p404 = os.path.join(OUT, "404.html")
+s = open(p404, encoding="utf-8").read().replace('content="index, follow"', 'content="noindex"')
+open(p404, "w", encoding="utf-8").write(s)
+
+# ================= robots / sitemap =================
+open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE)
+urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, _ in NAV)
+open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
+open(os.path.join(OUT, ".nojekyll"), "w").write("")
+print("ok")
