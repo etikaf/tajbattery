@@ -1,5 +1,5 @@
 # Generates the static site in docs/. Run: python3 tools/build_site.py docs
-import hashlib, json, os, sys, urllib.parse
+import hashlib, json, os, re, sys, urllib.parse
 
 OUT = sys.argv[1]
 
@@ -25,12 +25,13 @@ IMG = {
     "desk": ("solar-ups-repair-desk.webp", 680, 510, "Test board with switches and lights, UPS units and a solar panel at the repair desk", "Test board for UPS and solar units"),
 }
 
-def fig(key, cls="", eager=False, caption=True):
+def fig(key, cls="", eager=False, caption=True, cap_text=None, pre=""):
     f, w, h, alt, cap = IMG[key]
+    cap = cap_text or cap
     load = 'fetchpriority="high"' if eager else 'loading="lazy"'
     alt = alt.replace("&", "&amp;")
     fc = "<figcaption>%s</figcaption>" % cap if caption else ""
-    return f'<figure class="ph {cls}"><img src="assets/img/{f}" width="{w}" height="{h}" {load} decoding="async" alt="{alt}">{fc}</figure>'
+    return f'<figure class="ph {cls}"><img src="{pre}assets/img/{f}" width="{w}" height="{h}" {load} decoding="async" alt="{alt}">{fc}</figure>'
 PHONE_E164 = "+923152020525"  # shop line for calls, as on the signboard
 PHONE_LOCAL = "0315 2020525"
 WA = "923152020525"  # WhatsApp, same as the shop line
@@ -57,33 +58,88 @@ NAV = [
     ("contact.html", "Contact", "رابطہ"),
 ]
 
-def header(current):
-    links = "".join(
-        '<a href="%s"%s><span>%s</span><small class="ur" lang="ur">%s</small></a>' % (href, ' aria-current="page"' if href == current else "", label, ur)
-        for href, label, ur in NAV
-    )
-    return f'''<a class="skip" href="#main">Skip to content</a>
+UR_PAGES = {"index.html", "solar-packages.html", "contact.html"}  # pages that have an Urdu version in ur/
+
+def bdi(x):
+    """Keep numbers and units (5 kW, 0315 2020525) left-to-right inside Urdu text."""
+    return '<bdi dir="ltr">%s</bdi>' % x
+
+def nav_links(current, lang):
+    out = []
+    for href, label, ur in NAV:
+        if lang == "ur":
+            target = href if href in UR_PAGES else "../" + href
+            text = ur
+        else:
+            target, text = href, label
+        cur = ' aria-current="page"' if href == current else ""
+        out.append('<a href="%s"%s>%s</a>' % (target, cur, text))
+    return "".join(out)
+
+def header(current, lang="en"):
+    pre = "../" if lang == "ur" else ""
+    links = nav_links(current, lang)
+    if lang == "ur":
+        switch = '<a class="lang" href="../%s" hreflang="en" lang="en">English</a>' % current
+        menu, skip = "مینو", "مواد پر جائیں"
+        wa_text = "السلام علیکم، مجھے سولر سسٹم کے بارے میں معلومات چاہییں۔"
+    else:
+        switch = '<a class="lang" href="ur/%s" hreflang="ur" lang="ur">اردو</a>' % (current if current in UR_PAGES else "index.html")
+        menu, skip = "Menu", "Skip to content"
+        wa_text = "Assalam o Alaikum, I want information about a solar system."
+    return f'''<a class="skip" href="#main">{skip}</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <img src="assets/logo.svg" width="44" height="44" alt="">
+    <a class="brand" href="index.html" lang="en" dir="ltr">
+      <img src="{pre}assets/logo.svg" width="44" height="44" alt="">
       <div><b>Taj Battery</b><span>UPS &amp; Solar System</span></div>
     </a>
     <nav class="nav" aria-label="Main">{links}</nav>
     <div class="header-cta">
-      <a class="btn btn--ghost btn--sm btn--call" href="tel:{PHONE_E164}">{ICON_PHONE}{PHONE_LOCAL}</a>
-      <a class="btn btn--wa btn--sm" href="{wa("Assalam o Alaikum, I want information about a solar system.")}" target="_blank" rel="noopener">{ICON_WA}<span>WhatsApp</span></a>
-      <details class="menu"><summary>Menu <span class="ur" lang="ur">مینو</span></summary><nav class="nav" aria-label="Mobile">{links}</nav></details>
+      <a class="btn btn--ghost btn--sm btn--call" href="tel:{PHONE_E164}">{ICON_PHONE}<bdi dir="ltr">{PHONE_LOCAL}</bdi></a>
+      <a class="btn btn--wa btn--sm" href="{wa(wa_text)}" target="_blank" rel="noopener">{ICON_WA}<span>WhatsApp</span></a>
+      {switch}
+      <details class="menu"><summary>{menu}</summary><nav class="nav" aria-label="Mobile">{links}</nav></details>
     </div>
   </div>
 </header>'''
 
-FOOTER = f'''<footer class="site-footer">
+def footer(lang="en"):
+    pre = "../" if lang == "ur" else ""
+    if lang == "ur":
+        pages = "".join('<li><a href="%s">%s</a></li>' % (h if h in UR_PAGES else "../" + h, u) for h, _, u in NAV)
+        return f'''<footer class="site-footer">
+  <div class="wrap">
+    <div class="stack">
+      <h2>تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم</h2>
+      <p>2012 سے گھروں، دکانوں اور دفاتر کے لیے سولر سسٹم، بیٹریاں اور سولر کا سامان۔ دکان پہلوان گوٹھ، کراچی میں ہے اور ہم پورے کراچی میں کام کرتے ہیں۔</p>
+    </div>
+    <div>
+      <h2>صفحات</h2>
+      <ul>{pages}</ul>
+    </div>
+    <div>
+      <h2>رابطہ</h2>
+      <ul>
+        <li><a href="tel:{PHONE_E164}">کال {bdi(PHONE_LOCAL)}</a></li>
+        <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">واٹس ایپ {bdi(WA_LOCAL)}</a></li>
+        <li><a href="{MAPS}" target="_blank" rel="noopener">گوگل میپ پر دیکھیں</a></li>
+        <li>پہلوان گوٹھ، کراچی، سندھ</li>
+      </ul>
+    </div>
+    <p class="legal">&copy; <span id="year">2026</span> تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم، پہلوان گوٹھ، کراچی۔ قیمتیں اور اسٹاک اکثر بدلتے رہتے ہیں، براہِ کرم واٹس ایپ پر تصدیق کر لیں۔</p>
+  </div>
+</footer>
+<nav class="callbar" aria-label="کال یا واٹس ایپ">
+  <a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں</a>
+  <a class="btn btn--wa" href="{wa("السلام علیکم، مجھے سولر سسٹم کے بارے میں معلومات چاہییں۔")}" target="_blank" rel="noopener">{ICON_WA}واٹس ایپ</a>
+</nav>
+<script src="{pre}assets/site.js?v={JS_V}" defer></script>'''
+    return f'''<footer class="site-footer">
   <div class="wrap">
     <div class="stack">
       <h2>Taj Battery Service, UPS &amp; Solar System</h2>
-      <p>Solar systems, batteries and solar accessories for homes, shops and offices. Based in Pehlwan Goth, Karachi, and serving all of Karachi.</p>
-      <p class="ur" lang="ur">تاج بیٹری سروس — پہلوان گوٹھ، کراچی</p>
+      <p>Solar systems, batteries and solar accessories for homes, shops and offices since 2012. Based in Pehlwan Goth, Karachi, and serving all of Karachi.</p>
     </div>
     <div>
       <h2>Pages</h2>
@@ -96,6 +152,7 @@ FOOTER = f'''<footer class="site-footer">
         <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp {WA_LOCAL}</a></li>
         <li><a href="{MAPS}" target="_blank" rel="noopener">Find us on Google Maps</a></li>
         <li>Pehlwan Goth, Karachi, Sindh</li>
+        <li><a href="ur/index.html" lang="ur">اردو میں دیکھیں</a></li>
       </ul>
     </div>
     <p class="legal">&copy; <span id="year">2026</span> Taj Battery Service, UPS &amp; Solar System, Pehlwan Goth, Karachi. Prices and stock change often, so please confirm on WhatsApp.</p>
@@ -118,6 +175,7 @@ BUSINESS = {
     "url": SITE + "/",
     "logo": SITE + "/assets/logo.svg",
     "telephone": PHONE_E164,
+    "foundingDate": "2012",
     "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "telephone": "+" + WA, "contactOption": "WhatsApp", "areaServed": "PK", "availableLanguage": ["en", "ur"]},
     "hasMap": MAPS,
     "address": {
@@ -138,37 +196,52 @@ BUSINESS = {
 def ld(obj):
     return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False, indent=1) + "</script>"
 
-def crumbs_ld(slug, label):
+def crumbs_ld(slug, label, lang="en"):
+    base = SITE + ("/ur/" if lang == "ur" else "/")
     return {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
-            {"@type": "ListItem", "position": 2, "name": label, "item": SITE + "/" + slug},
+            {"@type": "ListItem", "position": 1, "name": "ہوم" if lang == "ur" else "Home", "item": base},
+            {"@type": "ListItem", "position": 2, "name": label, "item": base + slug},
         ],
     }
 
-def crumbs_html(label):
-    return f'<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li aria-current="page">{label}</li></ol></nav>'
+def crumbs_html(label, lang="en"):
+    home = "ہوم" if lang == "ur" else "Home"
+    return f'<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">{home}</a></li><li aria-current="page">{label}</li></ol></nav>'
 
-def page(slug, title, desc, body, jsonld=(), canonical=None):
-    canonical = canonical or (SITE + "/" + ("" if slug == "index.html" else slug))
+def url_for(slug, lang):
+    return SITE + ("/ur/" if lang == "ur" else "/") + ("" if slug == "index.html" else slug)
+
+def page(slug, title, desc, body, jsonld=(), canonical=None, lang="en"):
+    canonical = canonical or url_for(slug, lang)
     blocks = "\n".join(ld(j) for j in jsonld)
+    pre = "../" if lang == "ur" else ""
+    alternates = ""
+    if slug in UR_PAGES:
+        alternates = (f'<link rel="alternate" hreflang="en" href="{url_for(slug, "en")}">\n'
+                      f'<link rel="alternate" hreflang="ur" href="{url_for(slug, "ur")}">\n'
+                      f'<link rel="alternate" hreflang="x-default" href="{url_for(slug, "en")}">')
+    if lang == "en":
+        # English pages are English only; the one Urdu line kept is marked class="... punch"
+        body = re.sub(r'\s*<(p|span|small)\b(?![^>]*\bpunch\b)[^>]*\blang="ur"[^>]*>.*?</\1>', "", body, flags=re.S)
     html = f'''<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}"{' dir="rtl"' if lang == "ur" else ""}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
+{alternates}
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="QKkEqgPDfiFzSFv9FVwdT5i00rvNvBLs32RvsZem934">
 <meta name="geo.region" content="PK-SD">
 <meta name="geo.placename" content="Pehlwan Goth, Karachi">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{NAME}">
-<meta property="og:locale" content="en_PK">
+<meta property="og:locale" content="{"ur_PK" if lang == "ur" else "en_PK"}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
@@ -178,24 +251,26 @@ def page(slug, title, desc, body, jsonld=(), canonical=None):
 <meta property="og:image:alt" content="Taj Battery Service, UPS &amp; Solar System shop front in Pehlwan Goth, Karachi">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#12336b">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{pre}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap">
 <link rel="stylesheet" href="__URDU_FONT__">
-<link rel="stylesheet" href="assets/style.css?v={CSS_V}">
+<link rel="stylesheet" href="{pre}assets/style.css?v={CSS_V}">
 {blocks}
 </head>
 <body>
-{header(slug)}
+{header(slug, lang)}
 <main id="main">
 {body}
 </main>
-{FOOTER}
+{footer(lang)}
 </body>
 </html>
 '''
-    with open(os.path.join(OUT, slug), "w", encoding="utf-8") as f:
+    out_dir = os.path.join(OUT, "ur") if lang == "ur" else OUT
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, slug), "w", encoding="utf-8") as f:
         f.write(html)
 
 CTA = f'''<section class="cta section">
@@ -282,7 +357,7 @@ home = f'''<section class="hero">
     <div class="hero-copy">
       <span class="eyebrow">Solar installation · Pehlwan Goth, Karachi</span>
       <h1>Solar systems for homes and shops in Pehlwan Goth, Karachi</h1>
-      <p class="ur ur-line" lang="ur">بجلی کے بھاری بلوں اور لوڈ شیڈنگ سے نجات — مکمل سولر سسٹم، تنصیب کے ساتھ</p>
+      <p class="ur ur-line punch" lang="ur">بجلی کے بھاری بلوں اور لوڈ شیڈنگ سے نجات — مکمل سولر سسٹم، تنصیب کے ساتھ</p>
       <p class="lead">Cut your K-Electric bill and keep the fans on in load shedding. Hybrid and on-grid packages from 3 kW to 20 kW, installed by our own team.</p>
       <div class="btn-row">
         <a class="btn btn--sun" href="solar-packages.html">See solar packages</a>
@@ -309,7 +384,7 @@ home = f'''<section class="hero">
   <div><b>3 kW to 20 kW</b><span>Hybrid, on-grid and off-grid systems</span></div>
   <div><b>Car batteries</b><span>Osaka, Exide, Phoenix, fitted at the shop</span></div>
   <div><b>Full accessories</b><span>Structure, cables, breakers, batteries</span></div>
-  <div><b>Local shop</b><span>Pehlwan Goth, Karachi</span></div>
+  <div><b>Since 2012</b><span>Our shop in Pehlwan Goth, Karachi</span></div>
 </div>
 
 <section class="section">
@@ -344,8 +419,8 @@ home = f'''<section class="hero">
     {fig("front", caption=False)}
     <div class="stack">
       <span class="eyebrow">Visit the shop</span>
-      <h2>A battery and solar shop Pehlwan Goth already knows</h2>
-      <p>Families and shops around Pehlwan Goth already buy their batteries and UPS from us. Now we install complete solar systems too. Come and see panels, inverters and batteries in person before you buy.</p>
+      <h2>Pehlwan Goth's battery and solar shop since 2012</h2>
+      <p>Since 2012, families and shops around Pehlwan Goth have come to us for batteries, UPS and solar systems. Come and see panels, inverters and batteries in person before you buy.</p>
       <p class="ur" lang="ur">تاج بیٹری سروس، یو پی ایس اینڈ سولر سسٹم — پہلوان گوٹھ، کراچی</p>
       <p>We still sell Osaka, Exide and Phoenix batteries, repair UPS units, and test, charge and replace batteries at the shop. <a href="services.html#batteries">Battery and UPS services</a></p>
       <div class="btn-row"><a class="btn btn--sun btn--sm" href="our-shop.html">See inside the shop</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
@@ -714,8 +789,8 @@ shop = f'''<section class="hero hero-sm">
     {fig("front_old")}
     <div class="stack">
       <span class="eyebrow">About us</span>
-      <h2>The neighbourhood battery and UPS shop, now doing solar</h2>
-      <p>Taj Battery Service has served Pehlwan Goth for years. Families and shopkeepers come to us for batteries, UPS units, charging and repairs. "UPS &amp; Solar System" has been on our signboard for years too. Today we design and install complete solar systems for homes, shops and offices across Karachi.</p>
+      <h2>Batteries, UPS and solar in Pehlwan Goth since 2012</h2>
+      <p>Taj Battery Service opened in Pehlwan Goth in 2012. Since then, families and shopkeepers have come to us for batteries, UPS units, charging and repairs, and for solar systems. We design and install complete solar systems for homes, shops and offices across Karachi.</p>
       <p>When you buy solar from us, you deal with a shop you can walk into. If something needs attention later, you know where to find us.</p>
       <ul>
         <li>Car and UPS batteries from Osaka, Exide, Phoenix and AGS</li>
@@ -796,20 +871,334 @@ p404 = os.path.join(OUT, "404.html")
 s = open(p404, encoding="utf-8").read().replace('content="index, follow"', 'content="noindex"')
 open(p404, "w", encoding="utf-8").write(s)
 
+# ================= URDU PAGES (ur/) =================
+# Home, Packages and Contact in Urdu. Technical words (kW, inverter, hybrid, on-grid, lithium) stay in English.
+# Numbers with units are wrapped in bdi() so they read left to right inside Urdu sentences.
+B = bdi
+SOON_UR = '<span class="soon">جلد آرہا ہے</span>'
+PKG_UR = {
+    "3kW": dict(tag="چھوٹا گھر", inverter="4 kW hybrid", battery=B("5 kWh") + " lithium یا " + B("2") + " tubular", roof=B("≈ 210") + " مربع فٹ",
+                runs=["پنکھے، لائٹیں، LED TV", "فریج", "دن میں پانی کی موٹر", "لوڈ شیڈنگ میں بیک اپ"]),
+    "5kW": dict(tag="سب سے مقبول", inverter="6 kW hybrid", battery=B("5 kWh") + " lithium", roof=B("≈ 350") + " مربع فٹ",
+                runs=["دن میں ایک " + B("1.5") + " ٹن inverter AC", "فریج، پنکھے، لائٹیں، موٹر", "لوڈ شیڈنگ میں بیک اپ", "فون پر مانیٹرنگ"]),
+    "10kW": dict(tag="بڑا گھر", inverter=B("10 kW") + " hybrid یا on-grid", battery="اختیاری، " + B("10 kWh") + " lithium", roof=B("≈ 630") + " مربع فٹ",
+                 runs=["دن میں دو یا تین inverter AC", "پورے گھر کا لوڈ", "ماہانہ بل کا بڑا حصہ کم", "net metering کے لیے تیار (سروس جلد آرہی ہے)"]),
+    "15kW": dict(tag="دکان / دفتر", inverter=B("3-phase") + " on-grid", battery="اختیاری", roof=B("≈ 900–1,200") + " مربع فٹ",
+                 runs=["دکانیں، کلینک، اسکول، دفاتر", "کئی AC اور مشینیں", "فون پر مانیٹرنگ", "net metering کے لیے تیار (سروس جلد آرہی ہے)"]),
+}
+
+def pkg_card_ur(p, full):
+    u = PKG_UR[p["key"]]
+    runs = "".join("<li>%s</li>" % r for r in (u["runs"] if full else u["runs"][:3]))
+    details = ""
+    if full:
+        details = f'''<dl>
+    <dt>پینل</dt><dd>{B(p['panels'])}</dd>
+    <dt>کل سائز</dt><dd>{B(p['kwp'])}</dd>
+    <dt>ماہانہ یونٹ</dt><dd>{B(p['month'])}</dd>
+    <dt>Inverter</dt><dd>{u['inverter']}</dd>
+    <dt>بیٹری</dt><dd>{u['battery']}</dd>
+    <dt>چھت کی جگہ</dt><dd>{u['roof']}</dd>
+  </dl>'''
+    return f'''<article class="card pkg{' pkg--top' if p.get('top') else ''}" id="pkg-{p['key']}">
+  <span class="tag">{u['tag']}</span>
+  <div><h3 class="size">{B(p['size'] + '<small> kW</small>')}</h3><p class="kind" dir="ltr">{p['kind']}</p></div>
+  <p class="units"><b>{B(p['units'])}</b> یونٹ روزانہ</p>
+  {details}
+  <ul>{runs}</ul>
+  <a class="btn {'btn--sun' if p.get('top') else 'btn--blue'}" href="contact.html?need={p['key']}">قیمت معلوم کریں</a>
+</article>'''
+
+FAQ_UR = [
+    ("کراچی میں سولر سسٹم کتنے کا لگتا ہے؟",
+     "پینل، inverter اور بیٹری کی قیمتیں تقریباً ہر ہفتے بدلتی ہیں، اس لیے ہم اسی دن کی قیمت بتاتے ہیں۔ اپنا بجلی کا بل اور جو چیزیں چلانی ہیں، واٹس ایپ " + B(WA_LOCAL) + " پر بھیجیں۔ ہم مکمل لگے ہوئے سسٹم کی قیمت بتا دیں گے۔"),
+    ("مجھے کتنے kW کا سسٹم چاہیے؟",
+     "اپنے K-Electric بل پر ماہانہ یونٹ دیکھیں اور انہیں تقریباً " + B("125") + " سے تقسیم کریں۔ مثلاً " + B("600") + " یونٹ ماہانہ کے لیے تقریباً " + B("5 kW") + " کا سسٹم۔ سائٹ وزٹ پر ہم درست حساب کرتے ہیں۔"),
+    ("کیا لوڈ شیڈنگ میں سولر چلے گا؟",
+     "صرف hybrid اور off-grid سسٹم لوڈ شیڈنگ میں چلتے ہیں، کیونکہ ان میں بیٹری ہوتی ہے۔ عام on-grid سسٹم حفاظت کی وجہ سے بجلی جاتے ہی بند ہو جاتا ہے۔ اسی لیے ہمارے " + B("3 kW") + " اور " + B("5 kW") + " پیکج hybrid ہیں۔"),
+    ("کیا آپ گاڑی کی بیٹری بھی بیچتے ہیں؟",
+     "جی ہاں۔ زیادہ تر گاڑیوں کے لیے Osaka، Exide اور Phoenix بیٹریاں، پہلوان گوٹھ کی دکان پر فٹنگ کے ساتھ۔ صحیح بیٹری اور آج کی قیمت کے لیے اپنی گاڑی کا ماڈل واٹس ایپ کریں۔"),
+    ("کیا آپ K-Electric net metering کرواتے ہیں؟",
+     "Net metering کی سروس جلد شروع ہو رہی ہے۔ ہمارے on-grid اور hybrid سسٹم net metering کے لیے تیار ہوتے ہیں، اس لیے سروس شروع ہوتے ہی آپ درخواست دے سکیں گے۔ واٹس ایپ پر پیغام بھیجیں، ہم آپ کو بتا دیں گے۔"),
+    ("کیا آپ صرف پہلوان گوٹھ میں کام کرتے ہیں؟",
+     "ہماری دکان گلستانِ جوہر کے قریب پہلوان گوٹھ میں ہے، اور ہم پورے کراچی میں سسٹم لگاتے ہیں۔ سائٹ وزٹ کے لیے اپنا علاقہ بھیجیں۔"),
+    ("وارنٹی کیا ملتی ہے؟",
+     "پینل، inverter اور بیٹری پر کمپنی کی وارنٹی ہوتی ہے، اور ہم سسٹم کے ساتھ وارنٹی کارڈ دیتے ہیں۔ جو برانڈ آپ چنیں، اس کی وارنٹی کی تفصیل ہم سے پوچھ لیں۔"),
+]
+def strip_tags(t):
+    return re.sub(r"<[^>]+>", "", t)
+FAQ_UR_LD = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "inLanguage": "ur",
+    "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": strip_tags(a)}} for q, a in FAQ_UR],
+}
+faq_ur_html = "".join("<details><summary>%s</summary><p>%s</p></details>" % qa for qa in FAQ_UR)
+
+CTA_UR = f'''<section class="cta section">
+  <div class="wrap">
+    <div class="stack">
+      <h2>اپنا بجلی کا بل بھیجیں، ہم سسٹم کا سائز بتائیں گے</h2>
+      <p>اپنے تازہ K-Electric بل کی تصویر واٹس ایپ کریں اور بتائیں کہ کیا چلانا ہے۔ ہم سسٹم کا سائز اور آج کی قیمت بتائیں گے۔</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn--wa" href="{wa("السلام علیکم، میں سولر کی قیمت کے لیے اپنا بجلی کا بل بھیج رہا ہوں۔")}" target="_blank" rel="noopener">{ICON_WA}بل واٹس ایپ کریں</a>
+      <a class="btn btn--ghost" style="color:var(--on-panel)" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a>
+    </div>
+  </div>
+</section>'''
+
+home_ur = f'''<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">سولر تنصیب · پہلوان گوٹھ، کراچی</span>
+      <h1>پہلوان گوٹھ، کراچی میں گھروں اور دکانوں کے لیے سولر سسٹم</h1>
+      <p class="ur-line">بجلی کے بھاری بلوں اور لوڈ شیڈنگ سے نجات</p>
+      <p class="lead">K-Electric کا بل کم کریں اور لوڈ شیڈنگ میں بھی پنکھے چلتے رہیں۔ {B("3 kW")} سے {B("20 kW")} تک hybrid اور on-grid پیکجز، ہماری اپنی ٹیم کی تنصیب کے ساتھ۔</p>
+      <div class="btn-row">
+        <a class="btn btn--sun" href="solar-packages.html">سولر پیکجز دیکھیں</a>
+        <a class="btn btn--wa" href="{wa("السلام علیکم، مجھے سولر سسٹم کی قیمت معلوم کرنی ہے۔")}" target="_blank" rel="noopener">{ICON_WA}واٹس ایپ پر قیمت پوچھیں</a>
+      </div>
+    </div>
+    <aside class="spec" aria-labelledby="spec-title">
+      <span class="eyebrow">ہمارا سب سے مقبول سسٹم</span>
+      <h2 id="spec-title">گھر کے لیے {B("5 kW")} hybrid</h2>
+      <dl>
+        <dt>سولر پینل</dt><dd>{B("10 × 585 W")} N-type</dd>
+        <dt>کل سائز</dt><dd>{B("5.85 kWp")}</dd>
+        <dt>Inverter</dt><dd>{B("6 kW")} hybrid</dd>
+        <dt>بیٹری</dt><dd>{B("5 kWh")} lithium</dd>
+        <dt>روزانہ یونٹ</dt><dd class="big">{B("≈ 24")}</dd>
+        <dt>کیا چلے گا</dt><dd>دن میں {B("1.5")} ٹن inverter AC</dd>
+      </dl>
+      <small>کراچی کی دھوپ کے حساب سے اندازہ۔ اصل پیداوار موسم، گرد اور سائے پر منحصر ہے۔</small>
+    </aside>
+  </div>
+</section>
+
+<div class="facts">
+  <div><b>{B("3 kW")} سے {B("20 kW")}</b><span>hybrid، on-grid اور off-grid سسٹم</span></div>
+  <div><b>گاڑی کی بیٹریاں</b><span>Osaka، Exide، Phoenix، دکان پر فٹنگ</span></div>
+  <div><b>مکمل سامان</b><span>اسٹرکچر، تاریں، بریکر، بیٹریاں</span></div>
+  <div><b><bdi dir="ltr">2012</bdi> سے</b><span>ہماری دکان پہلوان گوٹھ، کراچی میں</span></div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">سولر پیکجز</span>
+      <h2>جو چلانا ہے، اس کے حساب سے سسٹم چنیں</h2>
+      <p>ہر پیکج میں پینل، inverter، اسٹرکچر، DC اور AC وائرنگ، بریکر، surge protection، ارتھنگ اور تنصیب شامل ہے۔</p>
+    </div>
+    <div class="grid grid-4 swipe">{"".join(pkg_card_ur(p, False) for p in PACKAGES)}</div>
+    <p class="note" style="margin-top:16px">کراچی کے لیے یونٹ کا اندازہ۔ <a href="solar-packages.html">تمام پیکجز کی مکمل تفصیل</a></p>
+  </div>
+</section>
+
+<section class="section section--alt" id="car-batteries">
+  <div class="wrap media-row carbat">
+    {fig("exide", caption=False, pre="../")}
+    <div class="stack">
+      <span class="eyebrow">گاڑی کی بیٹریاں</span>
+      <h2>گاڑی کی بیٹری، دکان پر فٹنگ کے ساتھ</h2>
+      <p>زیادہ تر گاڑیوں کے لیے Osaka، Exide اور Phoenix بیٹریاں۔ اپنی گاڑی پہلوان گوٹھ لائیں۔ ہم پرانی بیٹری چیک کریں گے، نئی بیٹری لگائیں گے اور جانے سے پہلے چارجنگ ٹیسٹ کریں گے۔</p>
+      <ul class="brands" dir="ltr"><li>Osaka</li><li>Exide</li><li>Phoenix</li></ul>
+      <div class="btn-row"><a class="btn btn--wa" href="{wa("السلام علیکم، مجھے گاڑی کی بیٹری چاہیے۔ میری گاڑی کا ماڈل: ")}" target="_blank" rel="noopener">{ICON_WA}گاڑی کا ماڈل بھیج کر قیمت پوچھیں</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap shop">
+    {fig("front", caption=False, pre="../")}
+    <div class="stack">
+      <span class="eyebrow">دکان پر تشریف لائیں</span>
+      <h2>2012 سے پہلوان گوٹھ کی بیٹری اور سولر کی دکان</h2>
+      <p>2012 سے پہلوان گوٹھ کے گھرانے اور دکاندار بیٹریوں، UPS اور سولر سسٹم کے لیے ہمارے پاس آتے ہیں۔ خریدنے سے پہلے پینل، inverter اور بیٹریاں خود آ کر دیکھیں۔</p>
+      <p>ہم Osaka، Exide اور Phoenix بیٹریاں بیچتے ہیں، UPS کی مرمت کرتے ہیں، اور دکان پر بیٹری چیک، چارج اور تبدیل کرتے ہیں۔</p>
+      <div class="btn-row"><a class="btn btn--sun btn--sm" href="../our-shop.html">دکان کی تصاویر دیکھیں</a><a class="btn btn--ghost btn--sm" href="{MAPS}" target="_blank" rel="noopener">راستہ دیکھیں</a><a class="btn btn--ghost btn--sm" href="tel:{PHONE_E164}">{ICON_PHONE}کال کریں {B(PHONE_LOCAL)}</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section strip-section" aria-label="دکان کی تصاویر">
+  <div class="wrap strip swipe">{fig("inside", cap_text="Osaka، Exide، Phoenix اور AGS کی بیٹریاں", pre="../")}{fig("charging", cap_text="گاہکوں کی بیٹریاں چارجنگ پر", pre="../")}{fig("ups_repair", cap_text="ہماری بینچ پر UPS کی مرمت", pre="../")}{fig("stock", cap_text="سولر پینل، تاریں اور سامان", pre="../")}</div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">ہمارا کام</span>
+      <h2>سولر کا ہر کام، چھت سے inverter تک</h2>
+    </div>
+    <div class="grid grid-3">
+      <article class="card">
+        <div class="icon">{ICON_PANEL}</div>
+        <h3>سولر تنصیب</h3>
+        <p>سائٹ وزٹ، لوڈ کا حساب، اونچا یا عام اسٹرکچر، صاف ستھری وائرنگ، اور ٹیسٹ کے بعد حوالگی، فون پر مانیٹرنگ کے ساتھ۔</p>
+        <a class="more" href="../services.html#installation">تنصیب کا طریقہ (English)</a>
+      </article>
+      <article class="card card--soon">
+        <div class="icon">{ICON_METER}</div>
+        <h3>K-Electric net metering {SOON_UR}</h3>
+        <p>دن کے اضافی یونٹ K-Electric کو دیں اور بل کم کریں۔ ہمارے سسٹم net metering کے لیے تیار ہیں، درخواست کی سروس جلد شروع ہوگی۔</p>
+        <a class="more" href="../services.html#net-metering">مزید تفصیل (English)</a>
+      </article>
+      <article class="card">
+        <div class="icon">{ICON_PLUG}</div>
+        <h3>سولر کا سامان</h3>
+        <p>پینل، hybrid اور on-grid inverter، lithium اور tubular بیٹریاں، اسٹرکچر، سولر کیبل، MC4، DC بریکر اور surge protector۔</p>
+        <a class="more" href="../accessories.html">سامان دیکھیں (English)</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">سوالات</span>
+      <h2>کراچی میں سولر کے بارے میں عام سوالات</h2>
+    </div>
+    <div class="faq">{faq_ur_html}</div>
+  </div>
+</section>
+{CTA_UR}'''
+
+page("index.html",
+     "پہلوان گوٹھ، کراچی میں سولر سسٹم کی تنصیب | Taj Battery & Solar",
+     "پہلوان گوٹھ، کراچی میں 3 kW سے 20 kW تک hybrid اور on-grid سولر پیکجز، تنصیب کے ساتھ۔ Osaka، Exide اور Phoenix گاڑی کی بیٹریاں اور UPS کی مرمت۔ کال یا واٹس ایپ 0315 2020525",
+     home_ur, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_UR_LD], lang="ur")
+
+# ---- Urdu packages page ----
+pk_ur = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("سولر پیکجز", "ur")}
+      <h1>کراچی کے گھروں اور دکانوں کے لیے سولر پیکجز</h1>
+      <p class="lead">تنصیب کے ساتھ چار معیاری سسٹم۔ ہر سسٹم آپ کی چھت، لوڈ اور بجٹ کے مطابق بدلا جا سکتا ہے۔</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">پیکجز</span>
+      <h2>تنصیب کے ساتھ مکمل سسٹم</h2>
+      <p>ہر پیکج میں شامل: پینل، inverter، galvanised اسٹرکچر، سولر DC کیبل، MC4 کنیکٹر، DC اور AC بریکر، surge protector، ارتھنگ، تنصیب اور ٹیسٹنگ۔</p>
+    </div>
+    <div class="grid grid-2">{"".join(pkg_card_ur(p, True) for p in PACKAGES)}</div>
+    <p class="note" style="margin-top:16px">یونٹ کا اندازہ تقریباً {B("4.2")} یونٹ فی kWp روزانہ کے حساب سے ہے، جو نقصانات کے بعد کراچی کی عام اوسط ہے۔ گرمیوں میں پیداوار زیادہ، اور سردیوں، گرد والے دنوں اور سائے میں کم ہوتی ہے۔ پینل کی wattage اور برانڈ اس ہفتے کے اسٹاک پر منحصر ہیں۔</p>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">سسٹم کی قسم</span>
+      <h2>On-grid، hybrid یا off-grid؟</h2>
+      <p>صحیح قسم اس بات پر منحصر ہے کہ آپ کو لوڈ شیڈنگ میں بجلی چاہیے یا نہیں۔</p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">On-grid</th><th scope="col">Hybrid</th><th scope="col">Off-grid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">لوڈ شیڈنگ میں چلتا ہے</th><td>نہیں</td><td>ہاں، بیٹری سے</td><td>ہاں، بیٹری سے</td></tr>
+          <tr><th scope="row">بیٹری</th><td>نہیں</td><td>lithium یا tubular</td><td>lithium یا tubular</td></tr>
+          <tr><th scope="row">Net metering (جلد آرہا ہے)</th><td>تیار</td><td>تیار</td><td>نہیں</td></tr>
+          <tr><th scope="row">قیمت</th><td>سب سے کم</td><td>درمیانی</td><td>درمیانی</td></tr>
+          <tr><th scope="row">کس کے لیے بہتر</th><td>بڑا بل کم کرنے کے لیے</td><td>لوڈ شیڈنگ والے گھروں کے لیے</td><td>جہاں K-Electric کنکشن نہ ہو</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">سائز</span>
+      <h2>اپنے بل سے سسٹم کا سائز معلوم کریں</h2>
+      <p>اپنے K-Electric بل کے ماہانہ یونٹ کو تقریباً {B("125")} سے تقسیم کریں۔ جواب kW میں سسٹم کا سائز ہے۔</p>
+    </div>
+    <div class="table-scroll">
+      <table class="fit">
+        <thead><tr><th scope="col">بل پر ماہانہ یونٹ</th><th scope="col">تجویز کردہ سسٹم</th><th scope="col">عام گھر</th></tr></thead>
+        <tbody>
+          <tr><td>{B("350")} تک</td><td>{B("3 kW")}</td><td>پنکھے، لائٹیں، فریج، AC نہیں</td></tr>
+          <tr><td>{B("350 – 700")}</td><td>{B("5 kW")}</td><td>گرمیوں میں ایک AC</td></tr>
+          <tr><td>{B("700 – 1,300")}</td><td>{B("10 kW")}</td><td>دو یا تین AC</td></tr>
+          <tr><td>{B("1,300")} سے زیادہ</td><td>{B("15 – 20 kW")}</td><td>بڑا گھر، دکان یا دفتر</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{CTA_UR}'''
+page("solar-packages.html",
+     "کراچی میں سولر پیکجز: 3، 5، 10 اور 15 kW | Taj Battery & Solar",
+     "کراچی میں 3 kW، 5 kW، 10 kW اور 15–20 kW سولر پیکجز، تنصیب کے ساتھ۔ پینل، hybrid inverter اور lithium بیٹری بیک اپ۔ دکان پہلوان گوٹھ میں۔ کال 0315 2020525",
+     pk_ur, [crumbs_ld("solar-packages.html", "سولر پیکجز", "ur")], lang="ur")
+
+# ---- Urdu contact page ----
+OPTS_UR = [(p["key"] + " solar system", B(p["key"].replace("kW", " kW")) + " سولر سسٹم") for p in PACKAGES] + [
+    ("Accessories / parts only", "صرف سامان / پرزے"), ("Car battery", "گاڑی کی بیٹری"), ("UPS / home batteries", "UPS / گھر کی بیٹریاں"),
+    ("Maintenance or repair", "مینٹیننس یا مرمت"), ("Not sure yet", "ابھی طے نہیں کیا")]
+opts_ur_html = "".join('<option value="%s">%s</option>' % (v, strip_tags(t)) for v, t in OPTS_UR)
+con_ur = f'''<section class="hero hero-sm">
+  <div class="wrap">
+    <div class="hero-copy">
+      {crumbs_html("رابطہ", "ur")}
+      <h1>پہلوان گوٹھ میں Taj Battery & Solar سے رابطہ کریں</h1>
+      <p class="lead">کال کریں، واٹس ایپ کریں یا دکان پر آئیں۔ فارم بھریں، آپ کی تفصیل کے ساتھ واٹس ایپ کھل جائے گا۔</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap contact">
+    <div class="stack" style="gap:24px">{fig("front", "shop-photo", caption=False, pre="../")}
+    <dl class="nap">
+      <div><dt>فون</dt><dd><a href="tel:{PHONE_E164}">{B(PHONE_LOCAL)}</a></dd></div>
+      <div><dt>واٹس ایپ</dt><dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener">{B("+92 315 2020525")}</a></dd></div>
+      <div><dt>دکان</dt><dd>پہلوان گوٹھ، کراچی، سندھ</dd></div>
+      <div><dt>نقشہ</dt><dd><a href="{MAPS}" target="_blank" rel="noopener">گوگل میپ پر کھولیں</a></dd></div>
+      <div><dt>سروس کا علاقہ</dt><dd style="font-weight:400">پہلوان گوٹھ، گلستانِ جوہر اور پورا کراچی</dd></div>
+    </dl></div>
+    <form class="quote" id="quote-form">
+      <h2 style="font-size:1.6rem">قیمت معلوم کریں</h2>
+      <label for="name">آپ کا نام<input id="name" name="name" required autocomplete="name"></label>
+      <label for="area">کراچی میں علاقہ<input id="area" name="area" required placeholder="مثلاً پہلوان گوٹھ، گلستانِ جوہر"></label>
+      <label for="need">آپ کو کیا چاہیے؟<select id="need" name="need">{opts_ur_html}</select></label>
+      <label for="bill">ماہانہ بل یا یونٹ <span class="hint">(اختیاری)</span><input id="bill" name="bill" placeholder="مثلاً 650 یونٹ یا 40,000 روپے"></label>
+      <label for="msg">مزید تفصیل <span class="hint">(اختیاری)</span><textarea id="msg" name="msg" placeholder="کون سی چیزیں چلانی ہیں، چھت کیسی ہے، کب چاہیے"></textarea></label>
+      <button class="btn btn--wa" type="submit">{ICON_WA}واٹس ایپ پر بھیجیں</button>
+    </form>
+  </div>
+</section>'''
+page("contact.html",
+     "Taj Battery & Solar سے رابطہ، پہلوان گوٹھ کراچی | 0315 2020525",
+     "سولر کی قیمت، بیٹریوں اور سامان کے لیے کال یا واٹس ایپ کریں 0315 2020525۔ Taj Battery Service, UPS & Solar System، پہلوان گوٹھ، کراچی۔",
+     con_ur, [crumbs_ld("contact.html", "رابطہ", "ur")], lang="ur")
+
+
 # ================= robots / sitemap =================
 open(os.path.join(OUT, "robots.txt"), "w").write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % SITE)
 urls = "".join("  <url><loc>%s/%s</loc></url>\n" % (SITE, "" if h == "index.html" else h) for h, *_ in NAV)
+urls += "".join("  <url><loc>%s</loc></url>\n" % url_for(h, "ur") for h, *_ in NAV if h in UR_PAGES)
 open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n")
 open(os.path.join(OUT, ".nojekyll"), "w").write("")
 
-# Ask Google Fonts for only the Urdu letters used on the site (a few KB instead of the whole Nastaliq font).
-import glob, re
-pages = glob.glob(os.path.join(OUT, "*.html"))
-urdu = set()
-for fp in pages:
-    urdu |= set(re.findall(r"[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]", open(fp, encoding="utf-8").read()))
-font_url = "https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap&text=" + urllib.parse.quote("".join(sorted(urdu)) + " ")
-for fp in pages:
-    t = open(fp, encoding="utf-8").read().replace("__URDU_FONT__", font_url.replace("&", "&amp;"))
-    open(fp, "w", encoding="utf-8").write(t)
+# Ask Google Fonts for only the Urdu letters each set of pages uses (a few KB instead of the whole Nastaliq font).
+import glob
+URDU_CHARS = r"[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]"
+for pages, family in ((glob.glob(os.path.join(OUT, "*.html")), "Noto+Nastaliq+Urdu"),
+                      (glob.glob(os.path.join(OUT, "ur", "*.html")), "Noto+Nastaliq+Urdu:wght@400;700")):
+    chars = set()
+    for fp in pages:
+        chars |= set(re.findall(URDU_CHARS, open(fp, encoding="utf-8").read()))
+    font_url = "https://fonts.googleapis.com/css2?family=%s&display=swap&text=%s" % (family, urllib.parse.quote("".join(sorted(chars)) + " "))
+    for fp in pages:
+        t = open(fp, encoding="utf-8").read().replace("__URDU_FONT__", font_url.replace("&", "&amp;"))
+        open(fp, "w", encoding="utf-8").write(t)
 print("ok")

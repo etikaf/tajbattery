@@ -122,7 +122,7 @@ p { margin: 0; }
   background: var(--surface); border-bottom: 1px solid var(--line);
 }
 .site-header .wrap { display: flex; align-items: center; gap: 16px; min-height: 76px; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-inline-end: auto; }
 .brand img { width: 44px; height: 44px; flex: none; background: var(--logo-bg); border-radius: 10px; padding: 2px; }
 .brand b { display: block; font: 800 1.25rem/1.1 var(--font-display); color: var(--ink); }
 .brand span { display: block; font: 700 0.7rem/1.3 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -145,7 +145,7 @@ p { margin: 0; }
   .menu summary .ur { font-size: 0.8rem; line-height: 1.8; color: var(--muted); }
   .menu summary::-webkit-details-marker { display: none; }
   .menu[open] .nav {
-    display: grid; position: absolute; right: 0; top: calc(100% + 8px); width: min(280px, 86vw);
+    display: grid; position: absolute; inset-inline-end: 0; top: calc(100% + 8px); width: min(280px, 86vw);
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 8px; box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
   }
@@ -182,7 +182,7 @@ p { margin: 0; }
 .spec h2 { font-size: 1.6rem; }
 .spec dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; }
 .spec dt { color: var(--on-panel-muted); }
-.spec dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.spec dd { margin: 0; font-weight: 700; text-align: end; font-variant-numeric: tabular-nums; }
 .spec dd.big { color: var(--sun); font: 700 1.6rem/1 var(--font-display); }
 .spec h2 { font-size: 1.35rem; }
 .spec small { color: var(--on-panel-muted); font-size: 0.82rem; }
@@ -227,15 +227,15 @@ p { margin: 0; }
 .pkg .units b { font: 800 1.3rem/1.2 var(--font-display); color: var(--sun-text); }
 .pkg dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; border-block: 1px solid var(--line); padding-block: 14px; font-size: 0.95rem; }
 .pkg dt { color: var(--muted); }
-.pkg dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
-.pkg ul { margin: 0; padding-left: 1.1em; color: var(--muted); font-size: 0.95rem; display: grid; gap: 4px; }
+.pkg dd { margin: 0; font-weight: 700; text-align: end; font-variant-numeric: tabular-nums; }
+.pkg ul { margin: 0; padding-inline-start: 1.1em; color: var(--muted); font-size: 0.95rem; display: grid; gap: 4px; }
 .pkg .btn { margin-top: auto; }
 .note { font-size: 0.88rem; color: var(--muted); max-width: 80ch; }
 
 /* Compare table */
 .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.97rem; }
-th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th, td { text-align: start; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
 thead th { font-family: var(--font-display); font-size: 1.02rem; font-weight: 800; background: var(--surface-2); }
 tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
 tbody th { font-weight: 700; }
@@ -327,7 +327,7 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 .crumbs { font-size: 0.9rem; color: var(--on-panel-muted); }
 .crumbs a { color: var(--on-panel-muted); }
 .crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
-.crumbs li + li::before { content: "/"; margin-right: 8px; opacity: 0.6; }
+.crumbs li + li::before { content: "/"; margin-inline-end: 8px; opacity: 0.6; }
 
 /* Shop photo */
 .shop { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
@@ -358,7 +358,7 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 @media (max-width: 860px) { .strip { grid-template-columns: 1fr 1fr; } }
 .media-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
 .media-row p, .media-row li { color: var(--muted); }
-.media-row ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.media-row ul { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 4px; }
 .media-row--tall { grid-template-columns: minmax(0, 0.6fr) 1fr; }
 .media-row--tall .ph img { max-height: 560px; width: auto; margin-inline: auto; }
 @media (max-width: 860px) { .media-row, .media-row--tall { grid-template-columns: 1fr; } }
@@ -426,7 +426,7 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 
 /* "Coming soon" tag */
 .soon {
-  display: inline-block; vertical-align: middle; margin-left: 6px;
+  display: inline-block; vertical-align: middle; margin-inline-start: 6px;
   font: 800 0.72rem/1 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase;
   background: var(--sun); color: var(--sun-ink); padding: 5px 9px; border-radius: 999px;
 }
@@ -436,3 +436,34 @@ form.quote .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; }
 .carbat .ph img { aspect-ratio: 4 / 3; object-fit: cover; }
 .carbat .brands { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
 .carbat .brands li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; font-weight: 700; color: var(--ink); }
+
+/* Language switch (English | اردو) */
+.lang {
+  display: inline-flex; align-items: center; text-decoration: none; padding: 6px 12px; border-radius: 10px;
+  border: 1px solid var(--line); color: var(--ink); font-weight: 700; white-space: nowrap;
+}
+.lang:lang(ur) { font-family: var(--font-urdu); font-weight: 400; font-size: 1.05rem; line-height: 1.6; padding-block: 2px 8px; }
+.lang:hover { border-color: var(--sun); }
+
+/* ===================== Urdu pages (ur/) ===================== */
+:root:lang(ur) {
+  --font-display: "Nunito", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", serif;
+  --font-body: "Nunito", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", serif;
+}
+html:lang(ur) body { line-height: 2.2; }
+html:lang(ur) h1, html:lang(ur) h2, html:lang(ur) h3 { line-height: 1.9; letter-spacing: 0; }
+html:lang(ur) h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
+html:lang(ur) .hero-sm h1 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); }
+html:lang(ur) h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); }
+html:lang(ur) h3 { font-size: 1.2rem; }
+/* Letter-spacing and capitals break joined Urdu letters */
+html:lang(ur) .eyebrow, html:lang(ur) .tag, html:lang(ur) .soon, html:lang(ur) .nap dt,
+html:lang(ur) .steps li::before { letter-spacing: 0; text-transform: none; }
+html:lang(ur) .eyebrow { font-size: 0.95rem; }
+html:lang(ur) .nav a { font-size: 1.02rem; line-height: 1.7; padding-block: 2px 8px; }
+html:lang(ur) .btn { line-height: 1.8; padding-block: 8px 12px; }
+html:lang(ur) .pkg .kind, html:lang(ur) .brand { text-align: left; }
+html:lang(ur) .brand span { letter-spacing: 0.1em; text-transform: uppercase; }
+html:lang(ur) .ur-line { font-size: clamp(1.2rem, 2.8vw, 1.6rem); }
+html:lang(ur) .faq summary { line-height: 1.9; }
+html:lang(ur) form.quote input, html:lang(ur) form.quote textarea, html:lang(ur) form.quote select { line-height: 1.9; }
