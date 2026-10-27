@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://your-domain.example/</loc></url>
-  <url><loc>https://your-domain.example/solar-packages.html</loc></url>
-  <url><loc>https://your-domain.example/accessories.html</loc></url>
-  <url><loc>https://your-domain.example/services.html</loc></url>
-  <url><loc>https://your-domain.example/contact.html</loc></url>
+  <url><loc>https://etikaf.github.io/tajbattery/</loc></url>
+  <url><loc>https://etikaf.github.io/tajbattery/solar-packages.html</loc></url>
+  <url><loc>https://etikaf.github.io/tajbattery/accessories.html</loc></url>
+  <url><loc>https://etikaf.github.io/tajbattery/services.html</loc></url>
+  <url><loc>https://etikaf.github.io/tajbattery/contact.html</loc></url>
 </urlset>

@@ -2,7 +2,7 @@
 import json, os, sys, urllib.parse
 
 OUT = sys.argv[1]
-SITE = "https://your-domain.example"  # replaced later with the GitHub Pages URL / real domain
+SITE = "https://etikaf.github.io/tajbattery"  # change to the custom domain when bought
 NAME = "Taj Battery Service, UPS & Solar System"
 PHOTO = "assets/img/taj-battery-shop-pehlwan-goth.webp"
 PHONE_E164 = "+923152020525"  # shop line for calls, as on the signboard
