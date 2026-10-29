@@ -253,7 +253,7 @@ BUSINESS = {
         {"@type": "Place", "name": "Gulistan-e-Jauhar, Karachi"},
         {"@type": "City", "name": "Karachi"},
     ],
-    "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Car battery", "UPS repair", "Lithium battery", "Tubular battery"],
+    "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Car battery", "Solar inverter repair", "MPPT charge controller repair", "UPS repair", "Lithium battery", "Tubular battery"],
 }
 
 def ld(obj):
@@ -545,8 +545,8 @@ home = f'''{SWAP_BANNER}
 {CTA}'''
 
 page("index.html",
-     "Solar, Car Batteries & UPS in Pehlwan Goth, Karachi | Taj Battery",
-     "Solar systems 3–20 kW installed, car and solar batteries (Osaka, Exide, Phoenix, AGS, Daewoo) and UPS repair in Pehlwan Goth, Karachi. Call 0315 2020525.",
+     "Solar Systems, Inverters & Batteries in Pehlwan Goth, Karachi",
+     "Solar systems 3–20 kW, solar panels, inverters and inverter repair, car and solar batteries (Osaka, Exide, AGS, Daewoo) in Pehlwan Goth, Karachi. 0315 2020525.",
      home, [dict({"@context": "https://schema.org"}, **BUSINESS), FAQ_LD])
 
 # ================= PACKAGES =================
@@ -554,7 +554,7 @@ pk = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
       {crumbs_html("Solar Packages")}
-      <h1>Solar packages for Karachi homes and shops</h1>
+      <h1>Solar system packages for Karachi homes and shops</h1>
       <p class="ur ur-line" lang="ur">سولر پیکجز — ۳ کلوواٹ سے ۲۰ کلوواٹ تک، تنصیب کے ساتھ</p>
       <p class="lead">Four standard systems with installation included. Each one can be adjusted to your roof, your load and your budget.</p>
     </div>
@@ -606,7 +606,7 @@ PKG_LD = {
     },
 }
 page("solar-packages.html",
-     "Solar Packages in Karachi: 3, 5, 10 & 15 kW | Taj Battery & Solar",
+     "Solar System Packages in Karachi: 3, 5, 10 & 15 kW | Taj Battery",
      "3 kW, 5 kW, 10 kW and 15–20 kW solar packages with installation in Karachi. Panels, hybrid inverter and lithium battery backup. Shop in Pehlwan Goth. Call 0315 2020525.",
      pk, [crumbs_ld("solar-packages.html", "Solar Packages"), PKG_LD])
 
@@ -670,7 +670,7 @@ acc = f'''<section class="hero hero-sm">
       {crumbs_html("Accessories")}
       <h1>Solar panels, inverters, batteries and DC accessories in Karachi</h1>
       <p class="ur ur-line" lang="ur">سولر کا تمام سامان — پینل، انورٹر، بیٹری، اسٹرکچر اور وائرنگ</p>
-      <p class="lead">Buy the full system or just the parts. Prices change often, so tap any item to ask today's rate on WhatsApp.</p>
+      <p class="lead">Buy the full system or just the parts: solar panels (solar plates), inverters, batteries and wiring. Prices change often, so tap any item to ask today's rate on WhatsApp.</p>
     </div>
   </div>
 </section>
@@ -824,7 +824,7 @@ svc = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
       {crumbs_html("Services")}
-      <h1>Solar installation, UPS repair and battery services</h1>
+      <h1>Solar installation, inverter and UPS repair, battery services</h1>
       <p class="ur ur-line" lang="ur">سولر تنصیب، نیٹ میٹرنگ، مینٹیننس اور بیٹری سروس</p>
       <p class="lead">From the first site visit to years of after-sales support, one team handles your system.</p>
     </div>
@@ -893,14 +893,15 @@ svc = f'''<section class="hero hero-sm">
   <div class="wrap media-row">
     {fig("ups_repair")}
     <div class="stack">
-      <span class="eyebrow">UPS and inverter repair</span>
-      <h2>UPS repair at our own bench</h2>
-      <p>UPS not charging, beeping, or switching off under load? Bring it to the shop. We repair the circuit boards, replace faulty parts and test every unit on load before it goes back.</p>
+      <span class="eyebrow">Inverter, MPPT and UPS repair</span>
+      <h2>Inverter and UPS repair at our own bench</h2>
+      <p>Solar inverter showing an error, MPPT controller not charging, or UPS beeping and switching off under load? Bring it to the shop. We repair the circuit boards, replace faulty parts and test every unit on load before it goes back.</p>
       <p class="ur" lang="ur">یو پی ایس اور انورٹر کی مرمت — دکان پر ٹیسٹنگ کے ساتھ</p>
       <ul>
-        <li>Home UPS and inverter repair</li>
-        <li>Charging faults and battery pairing</li>
-        <li>Solar charge controller and hybrid inverter checks</li>
+        <li>Solar and hybrid inverter repair</li>
+        <li>MPPT and solar charge controller repair</li>
+        <li>Home UPS repair, charging faults and battery pairing</li>
+        <li>Inverter fitting and replacement</li>
       </ul>
     </div>
   </div>
@@ -928,12 +929,12 @@ SVC_LD = {
     "@type": "ItemList",
     "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "item": {"@type": "Service", "name": n, "provider": {"@id": SITE + "/#business"}, "areaServed": "Karachi"}}
-        for i, n in enumerate(["Solar system installation", "Solar panel cleaning and maintenance", "UPS and inverter repair", "Battery testing, charging and replacement", "Car battery jump start"])
+        for i, n in enumerate(["Solar system installation", "Solar panel cleaning and maintenance", "Solar inverter and MPPT repair", "UPS repair", "Battery testing, charging and replacement", "Car battery jump start"])
     ],
 }
 page("services.html",
-     "Solar Installation & UPS Repair in Karachi | Taj Battery",
-     "Solar installation, panel cleaning, UPS and inverter repair, car batteries and battery charging from Pehlwan Goth, Karachi. Call or WhatsApp 0315 2020525.",
+     "Solar Inverter, MPPT & UPS Repair in Karachi | Taj Battery",
+     "Solar inverter, MPPT and UPS repair, inverter fitting, solar installation and panel cleaning, plus battery charging. Pehlwan Goth, Karachi. 0315 2020525.",
      svc, [crumbs_ld("services.html", "Services"), SVC_LD])
 
 # ================= OUR SHOP =================
@@ -1006,7 +1007,7 @@ con = f'''<section class="hero hero-sm">
       <div><dt>Opening hours</dt><dd>Every day, 9 am to 9 pm</dd></div>
       <div><dt>Facebook</dt><dd><a href="{FACEBOOK}" target="_blank" rel="noopener">facebook.com/tajbatery</a></dd></div>
       <div><dt>Map</dt><dd><a href="{MAPS}" target="_blank" rel="noopener">Open in Google Maps</a></dd></div>
-      <div><dt>Service area</dt><dd style="font-weight:400">Pehlwan Goth, Gulistan-e-Jauhar and all of Karachi</dd></div>
+      <div><dt>Service area</dt><dd style="font-weight:400">Pehlwan Goth, Gulistan-e-Jauhar (Johar) and all of Karachi</dd></div>
     </dl></div>
     <form class="quote" id="quote-form">
       <h2 style="font-size:1.6rem">Request a quote</h2>
