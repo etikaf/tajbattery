@@ -34,6 +34,11 @@ IMG = {
     "bench": ("ups-repair-test-bench.webp", 680, 453, "UPS and inverter test bench with sockets, meters and a battery under test", "Every repaired unit is tested on load"),
     "exide": ("exide-n240-12v-180ah-battery.webp", 680, 453, "Exide N240 12 volt 180Ah battery box in stock", "Exide N240, 12 V 180 Ah"),
     "stock": ("solar-panel-cables-accessories-shop.webp", 680, 510, "Solar panel, rolls of electrical cable and accessories on display in the shop", "Solar panel, cable and accessories in stock"),
+    "counter": ("taj-battery-shop-counter-battery-stock.webp", 680, 453, "Shop counter at Taj Battery with shelves of Exide, Osaka and AGS batteries and Osaka boxes stacked in front", "Car, UPS and solar batteries in stock"),
+    "solar_batt": ("exide-solar-tubular-batteries-karachi.webp", 680, 381, "Exide Solar 100 and Exide HP150 tubular battery boxes with Osaka batteries at the shop desk", "Exide Solar and tubular batteries"),
+    "street": ("taj-battery-shop-open-front-pehlwan-goth.webp", 680, 453, "Open front of Taj Battery Service, UPS and Solar System on Main Pehlwan Goth Road, with booster chargers and battery stock", "The shop front on Main Pehlwan Goth Road"),
+    "boosters": ("battery-booster-chargers-tubular-stock.webp", 680, 453, "Booster battery chargers at the shop entrance with Phoenix tubular batteries and Osaka boxes inside", "Booster chargers for battery charging"),
+    "team": ("taj-battery-team-pehlwan-goth.webp", 680, 453, "Two of the Taj Battery team at the shop, with AGS batteries and shelves of chargers and accessories", "The people you deal with at the shop"),
     "desk": ("solar-ups-repair-desk.webp", 680, 510, "Test board with switches and lights, UPS units and a solar panel at the repair desk", "Test board for UPS and solar units"),
 }
 
@@ -772,6 +777,7 @@ cb = f'''<section class="hero hero-sm">
       <article class="card"><h3>Lithium (LiFePO4)</h3><p>Lasts longest, no maintenance. Best for hybrid solar.</p></article>
       <article class="card"><h3>Tubular</h3><p>Lower price. Good for UPS backup.</p></article>
     </div>
+    <div class="strip strip--2" style="margin-top:20px">{fig("solar_batt")}{fig("counter")}</div>
     <div class="btn-row" style="margin-top:20px">
       <a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a solar / UPS battery. My inverter or UPS is: ")}" target="_blank" rel="noopener">{ICON_WA}Ask about solar batteries</a>
       <a class="btn btn--blue" href="solar-packages.html">See solar packages</a>
@@ -919,7 +925,7 @@ svc = f'''<section class="hero hero-sm">
       <article class="card"><div class="icon">{ICON_BATT}</div><h3>Replacement</h3><p>Lithium, tubular and car batteries, fitted at the shop. Give your old battery and pay only the difference.</p><a class="more" href="batteries.html">Car and solar batteries</a></article>
       <article class="card"><div class="icon">{ICON_PHONE}</div><h3>Car jump start</h3><p>Car won't start nearby? Call {PHONE_LOCAL} and we'll come to you.</p></article>
     </div>
-    <div class="strip strip--2" style="margin-top:20px">{fig("charging")}{fig("inside")}</div>
+    <div class="strip strip--2" style="margin-top:20px">{fig("charging")}{fig("boosters")}</div>
   </div>
 </section>
 {CTA}'''
@@ -938,7 +944,7 @@ page("services.html",
      svc, [crumbs_ld("services.html", "Services"), SVC_LD])
 
 # ================= OUR SHOP =================
-GALLERY = ["front", "inside", "charging", "ups_repair", "bench", "desk", "stock", "exide", "front_old"]
+GALLERY = ["front", "street", "team", "counter", "inside", "charging", "boosters", "ups_repair", "bench", "desk", "stock", "solar_batt", "exide", "front_old"]
 shop = f'''<section class="hero hero-sm">
   <div class="wrap">
     <div class="hero-copy">
