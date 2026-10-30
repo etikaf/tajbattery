@@ -54,6 +54,7 @@ PHONE_LOCAL = "0315 2020525"
 WA = "923152020525"  # WhatsApp, same as the shop line
 WA_LOCAL = "0315 2020525"
 MAPS = "https://share.google/svg2b4ibmyMFKSHeM"
+GEO = None  # (latitude, longitude) of the shop pin from Google Maps, e.g. (24.9xxxx, 67.1xxxx); fills "geo" in the JSON-LD
 FACEBOOK = "https://www.facebook.com/tajbatery"
 ADDRESS = "Main Pehlwan Goth Road, near Saqa-e-Sakina Imambargah, Pehlwan Goth, Karachi"
 ADDRESS_UR = "مین پہلوان گوٹھ روڈ، نزد سقائے سکینہ امام بارگاہ، پہلوان گوٹھ، کراچی"
@@ -260,6 +261,8 @@ BUSINESS = {
     ],
     "knowsAbout": ["Solar panel installation", "Hybrid solar inverter", "Car battery", "Solar inverter repair", "MPPT charge controller repair", "UPS repair", "Lithium battery", "Tubular battery"],
 }
+if GEO:
+    BUSINESS["geo"] = {"@type": "GeoCoordinates", "latitude": GEO[0], "longitude": GEO[1]}
 
 def ld(obj):
     return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False, indent=1) + "</script>"
@@ -714,6 +717,8 @@ CB_FAQ = [
      "Lithium lasts much longer, needs no maintenance and handles daily solar charging better, but costs more. Tubular costs less and works well for UPS backup, but needs water top-up and is replaced sooner. Tell us your inverter and the backup hours you need and we suggest the right one."),
     ("Can I add a battery to my existing solar system?",
      "Yes, if your inverter is hybrid or off-grid. A plain on-grid inverter cannot use a battery, so it needs a hybrid inverter first. Send us a photo of your inverter's label on WhatsApp and we check."),
+    ("Where is your battery shop? Is it near Gulistan-e-Jauhar?",
+     "Yes. Taj Battery is on Main Pehlwan Goth Road, near Saqa-e-Sakina Imambargah, Pehlwan Goth, right next to Gulistan-e-Jauhar (Johar). Open every day, 9 am to 9 pm. Search Taj Battery on Google Maps for directions, or call " + PHONE_LOCAL + "."),
     ("My car won't start. Can you help?",
      "If you are near Pehlwan Goth, call " + PHONE_LOCAL + " for a jump start. If the battery is finished, we can fit a new one at the shop."),
 ]
@@ -724,7 +729,7 @@ cb = f'''<section class="hero hero-sm">
     <div class="hero-copy">
       {crumbs_html("Batteries")}
       <h1>Car and solar batteries in Karachi</h1>
-      <p class="lead">Dry and regular car batteries, and lithium and tubular batteries for solar and UPS, from our shop in Pehlwan Goth. Osaka, Exide, Phoenix, AGS and Daewoo.</p>
+      <p class="lead">Dry and regular car batteries, and lithium and tubular batteries for solar and UPS, from our battery shop in Pehlwan Goth, next to Gulistan-e-Jauhar (Johar). Osaka, Exide, Phoenix, AGS and Daewoo.</p>
       <div class="btn-row">
         <a class="btn btn--sun" href="#car">Car batteries</a>
         <a class="btn btn--sun" href="#solar">Solar batteries</a>
@@ -739,7 +744,7 @@ cb = f'''<section class="hero hero-sm">
     <div class="stack">
       <span class="eyebrow">Car batteries</span>
       <h2>Car batteries: Osaka, Exide, Phoenix, AGS and Daewoo</h2>
-      <p>Dry and regular batteries for most cars, fitted the same day at our Pehlwan Goth shop.</p>
+      <p>Dry (maintenance-free, MF) and regular batteries for most cars, fitted the same day at our Pehlwan Goth shop, a short drive from Johar.</p>
       <ul class="brands">{"".join("<li>%s</li>" % b for b in BRANDS)}</ul>
       <div class="btn-row"><a class="btn btn--wa" href="{wa("Assalam o Alaikum, I need a car battery. My car model and year: ")}" target="_blank" rel="noopener">{ICON_WA}WhatsApp your car model</a><a class="btn btn--blue" href="tel:{PHONE_E164}">{ICON_PHONE}Call {PHONE_LOCAL}</a></div>
     </div>
@@ -749,7 +754,7 @@ cb = f'''<section class="hero hero-sm">
 <section class="section section--alt">
   <div class="wrap">
     <div class="duo">
-      <article class="card"><h3>Dry (maintenance-free)</h3><p>No water top-up, ever.</p></article>
+      <article class="card"><h3>Dry (maintenance-free, MF)</h3><p>No water top-up, ever.</p></article>
       <article class="card"><h3>Regular</h3><p>Lower price. Check the water now and then.</p></article>
     </div>
   </div>
@@ -775,7 +780,7 @@ cb = f'''<section class="hero hero-sm">
     </div>
     <div class="duo">
       <article class="card"><h3>Lithium (LiFePO4)</h3><p>Lasts longest, no maintenance. Best for hybrid solar.</p></article>
-      <article class="card"><h3>Tubular</h3><p>Lower price. Good for UPS backup.</p></article>
+      <article class="card"><h3>Tubular (deep cycle)</h3><p>Lower price. Good for UPS backup.</p></article>
     </div>
     <div class="strip strip--2" style="margin-top:20px">{fig("solar_batt")}{fig("counter")}</div>
     <div class="btn-row" style="margin-top:20px">
@@ -811,8 +816,8 @@ cb = f'''<section class="hero hero-sm">
 </section>
 {CTA}'''
 page("batteries.html",
-     "Car & Solar Batteries in Karachi: Lithium, Tubular | Taj Battery",
-     "Dry and regular car batteries, lithium and tubular solar batteries. Osaka, Exide, Phoenix, AGS, Daewoo. Pehlwan Goth, Karachi. WhatsApp 0315 2020525.",
+     "Battery Shop near Johar, Karachi: Car, Dry & Solar Batteries",
+     "Battery shop in Pehlwan Goth, next to Gulistan-e-Jauhar: dry (MF) and regular car batteries, tubular and lithium solar batteries. Osaka, Exide, Phoenix, AGS, Daewoo.",
      cb, [crumbs_ld("batteries.html", "Batteries"), CB_FAQ_LD])
 
 # ================= SERVICES =================
